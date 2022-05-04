@@ -13,6 +13,6 @@ data class FilterState(
     val priceRangeLimit: ClosedFloatingPointRange<Float> = 300f..2000f,
     val availableFrom: Date = Date.today,
     val propertyType: List<PropertyTypeModel> = emptyList(),
-    private val equipments: List<EquipmentModel> = emptyList(),
-    private val propertyFeatures: List<PropertyFeatureModel> = emptyList()
+    val equipments: List<EquipmentModel> = emptyList(),
+    val propertyFeatures: List<PropertyFeatureModel> = emptyList()
 )

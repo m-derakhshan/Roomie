@@ -1,6 +1,7 @@
 package m.derakhshan.roomie.feature_home.presentation.composable.filter_section
 
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -252,9 +253,12 @@ fun FilterSearchSection(
                         },
                         onDragStopped = {
                             if (abs(offset) > 110f) {
-                                viewModel.onEvent(FilterEvent.AddAdditionalInfoToFilterList)
                                 if (offset < (-110f))
                                     viewModel.onEvent(FilterEvent.ResetAllFilters)
+                                Log.i(
+                                    "Log",
+                                    "FilterSearchSection: state is ${state.propertyFeatures.toList()}"
+                                )
                                 onButtonClickListener(state, (offset) > 110f)
                             }
                             offset = 0f

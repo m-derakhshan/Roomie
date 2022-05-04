@@ -14,6 +14,5 @@ sealed class FilterEvent {
     data class UpdatePropertyFeature(val feature: PropertyFeatureModel, val add: Boolean) :
         FilterEvent()
 
-    object AddAdditionalInfoToFilterList : FilterEvent()
     object ResetAllFilters : FilterEvent()
 }

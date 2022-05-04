@@ -1,5 +1,6 @@
 package m.derakhshan.roomie.feature_home.presentation.filter_section
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -138,6 +139,9 @@ class FilterViewModel : ViewModel() {
             is FilterEvent.UpdateSelectedEquipment -> {
                 val index = equipments.indexOfFirst { it.id == event.equipment.id }
                 equipments[index] = event.equipment
+                _state.value = _state.value.copy(
+                    equipments = equipments
+                )
             }
             is FilterEvent.UpdateSelectedPropertyType -> {
                 _state.value = _state.value.copy(selectedPropertyType = event.type)
@@ -147,12 +151,6 @@ class FilterViewModel : ViewModel() {
             }
             is FilterEvent.UpdatePriceRange -> {
                 _state.value = _state.value.copy(priceRange = event.range)
-            }
-            FilterEvent.AddAdditionalInfoToFilterList -> {
-                _state.value = _state.value.copy(
-                    equipments = equipments,
-                    propertyFeatures = propertyFeatures
-                )
             }
             FilterEvent.ResetAllFilters -> {
                 // TODO: implement reset filters
@@ -167,6 +165,9 @@ class FilterViewModel : ViewModel() {
                                 else -> 0
                             }
                             )
+                )
+                _state.value = _state.value.copy(
+                    propertyFeatures = propertyFeatures
                 )
             }
         }
