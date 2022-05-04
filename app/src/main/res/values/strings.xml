@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Roomie</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="wish_list">Wish List</string>
+    <string name="map">Map</string>
+    <string name="no_connection_load_offline"> No internet Connection. Old data is loaded.</string>
+    <string name="special_offer_for_you">Special Offer for you</string>
+    <string name="slogan_short">Let\'s find \n you\'re perfect place!</string>
+    <string name="slogan_long">Roomie is designed provide the most comfortable solutions to meet any requirement.</string>
+    <string name="search">Search for a place in Milan…</string>
+    <string name="show_places">Show places</string>
+    <string name="property_type">Property Type</string>
+    <string name="available_from">Available From</string>
+    <string name="equipments">Equipments</string>
+    <string name="property_features">Property Features</string>
+    <string name="price_range">Price Range</string>
+    <string name="filter">Filter</string>
+    <string name="all">All</string>
+</resources>
