@@ -176,26 +176,35 @@ fun FilterSearchSection(
             Section(text = stringResource(id = R.string.available_from))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Column(modifier = Modifier.height(350.dp)) {
-                DateSection(preselectedDate = state.availableFrom) {
-                    viewModel.onEvent(FilterEvent.UpdateAvailableFrom(it.first()))
-                }
+                DateSection(
+                    preselectedDate = state.availableFrom,
+                    selectedDateListener = remember(viewModel) {
+                        {
+                            viewModel.onEvent(FilterEvent.UpdateAvailableFrom(it.first()))
+                        }
+                    }
+                )
             }
 
             //--------------------(Equipments)--------------------//
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Section(text = stringResource(id = R.string.equipments))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            Equipments(equipments = viewModel.equipments, checkListener = {
-                viewModel.onEvent(FilterEvent.UpdateSelectedEquipment(it))
+            Equipments(equipments = viewModel.equipments, checkListener = remember(viewModel) {
+                {
+                    viewModel.onEvent(FilterEvent.UpdateSelectedEquipment(it))
+                }
             })
 
             //--------------------(Property Features)--------------------//
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Section(text = stringResource(id = R.string.property_features))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            ApartmentFeature(features = viewModel.propertyFeatures) { feature, add ->
-                viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
-            }
+            ApartmentFeature(features = viewModel.propertyFeatures, listener = remember(viewModel) {
+                { feature, add ->
+                    viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
+                }
+            })
 
 
         }
@@ -255,10 +264,6 @@ fun FilterSearchSection(
                             if (abs(offset) > 110f) {
                                 if (offset < (-110f))
                                     viewModel.onEvent(FilterEvent.ResetAllFilters)
-                                Log.i(
-                                    "Log",
-                                    "FilterSearchSection: state is ${state.propertyFeatures.toList()}"
-                                )
                                 onButtonClickListener(state, (offset) > 110f)
                             }
                             offset = 0f
@@ -317,6 +322,7 @@ private fun Section(
 
 @Composable
 private fun DateSection(preselectedDate: Date, selectedDateListener: (List<Date>) -> Unit) {
+    Log.i("Log", "DateSection: recomposed")
     var monthNumber by remember { mutableStateOf(0) }
     DatePicker(
         preSelectedDates = listOf(preselectedDate),
@@ -329,6 +335,7 @@ private fun DateSection(preselectedDate: Date, selectedDateListener: (List<Date>
 
 @Composable
 private fun Equipments(equipments: List<EquipmentModel>, checkListener: (EquipmentModel) -> Unit) {
+    Log.i("Log", "Equipments: recomposed")
     for (item in equipments.indices step 2) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Row(
@@ -363,6 +370,7 @@ private fun ApartmentFeature(
     features: List<PropertyFeatureModel>,
     listener: (PropertyFeatureModel, Boolean) -> Unit
 ) {
+    Log.i("Log", "ApartmentFeature: recomposed")
     Column(modifier = Modifier.fillMaxWidth()) {
         features.forEach { feature ->
             Row(

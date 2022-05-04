@@ -2,6 +2,7 @@ package m.derakhshan.roomie.feature_home.presentation.composable.filter_section
 
 
 
+
 import androidx.compose.animation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -47,7 +48,6 @@ fun DatePicker(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
