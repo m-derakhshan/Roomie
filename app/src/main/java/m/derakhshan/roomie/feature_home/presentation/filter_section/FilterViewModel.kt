@@ -2,7 +2,6 @@ package m.derakhshan.roomie.feature_home.presentation.filter_section
 
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import m.derakhshan.roomie.feature_home.domain.model.filter.EquipmentModel
@@ -14,9 +13,6 @@ class FilterViewModel : ViewModel() {
 
     private val _state = mutableStateOf(FilterState())
     val state: State<FilterState> = _state
-
-    val equipments = mutableStateListOf<EquipmentModel>()
-    val propertyFeatures = mutableStateListOf<PropertyFeatureModel>()
 
 
     init {
@@ -42,10 +38,8 @@ class FilterViewModel : ViewModel() {
                     icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
                     title = "Studio-Flat"
                 )
-            )
-        )
-        equipments.addAll(
-            arrayListOf(
+            ),
+            equipments = listOf(
                 EquipmentModel(
                     id = "1",
                     title = "TV",
@@ -111,10 +105,8 @@ class FilterViewModel : ViewModel() {
                     title = "Bike parking",
                     isChecked = false
                 )
-            )
-        )
-        propertyFeatures.addAll(
-            listOf(
+            ),
+            propertyFeatures = listOf(
                 PropertyFeatureModel(
                     id = "0",
                     "Persons Number"
@@ -137,10 +129,11 @@ class FilterViewModel : ViewModel() {
                 _state.value = _state.value.copy(searchValue = event.search)
             }
             is FilterEvent.UpdateSelectedEquipment -> {
-                val index = equipments.indexOfFirst { it.id == event.equipment.id }
-                equipments[index] = event.equipment
+                val index = _state.value.equipments.indexOfFirst { it.id == event.equipment.id }
+                val newList = _state.value.equipments.toMutableList()
+                newList[index] = event.equipment
                 _state.value = _state.value.copy(
-                    equipments = equipments
+                    equipments = newList
                 )
             }
             is FilterEvent.UpdateSelectedPropertyType -> {
@@ -156,19 +149,20 @@ class FilterViewModel : ViewModel() {
                 // TODO: implement reset filters
             }
             is FilterEvent.UpdatePropertyFeature -> {
-                val index = propertyFeatures.indexOfFirst { it.id == event.feature.id }
-                propertyFeatures[index] = event.feature.copy(
-                    number = propertyFeatures[index].number + (
+                val index = _state.value.propertyFeatures.indexOfFirst { it.id == event.feature.id }
+                val newList = _state.value.propertyFeatures.toMutableList()
+                newList[index] = event.feature.copy(
+                    number = _state.value.propertyFeatures[index].number + (
                             when {
                                 event.add -> 1
-                                propertyFeatures[index].number > 0 -> -1
+                                _state.value.propertyFeatures[index].number > 0 -> -1
                                 else -> 0
                             }
                             )
                 )
-//                _state.value = _state.value.copy(
-//                    propertyFeatures = propertyFeatures
-//                )
+                _state.value = _state.value.copy(
+                    propertyFeatures = newList
+                )
             }
         }
     }

@@ -2,7 +2,6 @@ package m.derakhshan.roomie.feature_home.presentation.composable
 
 
 
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -197,8 +196,7 @@ fun HomeScreen(
                     .clip(RemovableRectShape(state.filterOffset.value))
                     .background(White)
             ) {
-                FilterSearchSection{ filters, confirmed ->
-                    Log.i("Log", "HomeScreen: equipments: ${filters.equipments.toList()}")
+                FilterSearchSection { filters, confirmed ->
                     if (confirmed)
                         viewModel.onEvent(HomeEvent.UpdateAppliedFilter(filters))
                     viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)

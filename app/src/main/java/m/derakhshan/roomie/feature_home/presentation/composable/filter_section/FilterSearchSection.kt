@@ -190,23 +190,24 @@ fun FilterSearchSection(
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Section(text = stringResource(id = R.string.equipments))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            Equipments(equipments = viewModel.equipments, checkListener = remember(viewModel) {
-                {
-                    viewModel.onEvent(FilterEvent.UpdateSelectedEquipment(it))
+            Equipments(
+                equipments = state.equipments,
+                checkListener = remember(viewModel) {
+                    {
+                        viewModel.onEvent(FilterEvent.UpdateSelectedEquipment(it))
+                    }
                 }
-            })
+            )
 
             //--------------------(Property Features)--------------------//
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Section(text = stringResource(id = R.string.property_features))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            ApartmentFeature(features = viewModel.propertyFeatures, listener = remember(viewModel) {
+            ApartmentFeature(features = state.propertyFeatures, listener = remember(viewModel) {
                 { feature, add ->
                     viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
                 }
             })
-
-
         }
         //--------------------(confirm or reject selected filter)--------------------//
         Box(
@@ -370,7 +371,7 @@ private fun ApartmentFeature(
     features: List<PropertyFeatureModel>,
     listener: (PropertyFeatureModel, Boolean) -> Unit
 ) {
-    Log.i("Log", "ApartmentFeature: recomposed")
+
     Column(modifier = Modifier.fillMaxWidth()) {
         features.forEach { feature ->
             Row(
