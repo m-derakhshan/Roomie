@@ -1,7 +1,7 @@
 package m.derakhshan.roomie.feature_home.presentation.composable.filter_section
 
 
-import android.util.Log
+
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -22,7 +22,6 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -327,7 +326,7 @@ private fun Section(
 
 @Composable
 private fun DateSection(preselectedDate: Date, selectedDateListener: (List<Date>) -> Unit) {
-    Log.i("Log", "DateSection: recomposed")
+
     var monthNumber by remember { mutableStateOf(0) }
     DatePicker(
         preSelectedDates = listOf(preselectedDate),
@@ -343,7 +342,7 @@ private fun Equipments(
     equipmentList: State<List<EquipmentModel>>,
     checkListener: (EquipmentModel) -> Unit
 ) {
-    Log.i("Log", "Equipments: recomposed")
+
     val equipments = equipmentList.value
     for (item in equipments.indices step 2) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -379,7 +378,7 @@ private fun ApartmentFeature(
     featuresList: State<List<PropertyFeatureModel>>,
     listener: (PropertyFeatureModel, Boolean) -> Unit
 ) {
-    Log.i("Log", "ApartmentFeature: recomposed")
+
     val features = featuresList.value
     Column(modifier = Modifier.fillMaxWidth()) {
         features.forEach { feature ->
