@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -52,6 +53,9 @@ fun FilterSearchSection(
 ) {
 
     val state = viewModel.state.value
+    val equipments = rememberUpdatedState(newValue = state.equipments)
+    val propertyFeature = rememberUpdatedState(newValue = state.propertyFeatures)
+
     var offset by remember { mutableStateOf(0f) }
     val animatedOffset by animateFloatAsState(
         targetValue = offset, animationSpec = spring(
@@ -191,7 +195,7 @@ fun FilterSearchSection(
             Section(text = stringResource(id = R.string.equipments))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Equipments(
-                equipments = state.equipments,
+                equipmentList = equipments,
                 checkListener = remember(viewModel) {
                     {
                         viewModel.onEvent(FilterEvent.UpdateSelectedEquipment(it))
@@ -203,7 +207,7 @@ fun FilterSearchSection(
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Section(text = stringResource(id = R.string.property_features))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            ApartmentFeature(features = state.propertyFeatures, listener = remember(viewModel) {
+            ApartmentFeature(featuresList = propertyFeature, listener = remember(viewModel) {
                 { feature, add ->
                     viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
                 }
@@ -335,8 +339,12 @@ private fun DateSection(preselectedDate: Date, selectedDateListener: (List<Date>
 }
 
 @Composable
-private fun Equipments(equipments: List<EquipmentModel>, checkListener: (EquipmentModel) -> Unit) {
+private fun Equipments(
+    equipmentList: State<List<EquipmentModel>>,
+    checkListener: (EquipmentModel) -> Unit
+) {
     Log.i("Log", "Equipments: recomposed")
+    val equipments = equipmentList.value
     for (item in equipments.indices step 2) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Row(
@@ -368,10 +376,11 @@ private fun Equipments(equipments: List<EquipmentModel>, checkListener: (Equipme
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun ApartmentFeature(
-    features: List<PropertyFeatureModel>,
+    featuresList: State<List<PropertyFeatureModel>>,
     listener: (PropertyFeatureModel, Boolean) -> Unit
 ) {
-
+    Log.i("Log", "ApartmentFeature: recomposed")
+    val features = featuresList.value
     Column(modifier = Modifier.fillMaxWidth()) {
         features.forEach { feature ->
             Row(
