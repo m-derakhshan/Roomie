@@ -12,15 +12,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import m.derakhshan.roomie.feature_home.domain.model.PlaceModel
+import m.derakhshan.roomie.feature_home.domain.model.PropertyModel
 import m.derakhshan.roomie.ui.theme.space
 
 
 @Composable
-fun SpecialPlaceItem(item: PlaceModel, contentDescription: String? = null) {
+fun SpecialPlaceItem(item: PropertyModel, contentDescription: String? = null) {
     Box(modifier = Modifier.fillMaxSize()) {
         AsyncImage(
-            model = item.image,
+            model = item.images.first(),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
             contentDescription = contentDescription,

@@ -14,11 +14,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import m.derakhshan.roomie.feature_home.domain.model.PlaceModel
+import m.derakhshan.roomie.feature_home.domain.model.PropertyModel
 import m.derakhshan.roomie.ui.theme.*
 
 @Composable
-fun PlaceItem(modifier: Modifier = Modifier, item: PlaceModel, contentDescription: String? = null) {
+fun PropertyItem(modifier: Modifier = Modifier, item: PropertyModel, contentDescription: String? = null) {
 
     Column(
         modifier = modifier
@@ -40,7 +40,7 @@ fun PlaceItem(modifier: Modifier = Modifier, item: PlaceModel, contentDescriptio
                 .height(150.dp)
         ) {
             AsyncImage(
-                model = item.image,
+                model = item.images.first(),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 contentDescription = contentDescription,

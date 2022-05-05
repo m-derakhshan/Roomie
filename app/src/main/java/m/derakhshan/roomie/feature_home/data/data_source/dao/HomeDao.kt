@@ -6,21 +6,21 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import m.derakhshan.roomie.feature_home.domain.model.PlaceModel
+import m.derakhshan.roomie.feature_home.domain.model.PropertyModel
 
 @Dao
 interface HomeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlaces(item: List<PlaceModel>)
+    suspend fun insertPlaces(item: List<PropertyModel>)
 
-    @Query("DELETE FROM PlaceModel")
+    @Query("DELETE FROM PropertyModel")
     suspend fun deleteAllPlaces()
 
-    @Query("SELECT * FROM PlaceModel")
-    fun getAllPlaces(): Flow<List<PlaceModel>>
+    @Query("SELECT * FROM PropertyModel")
+    fun getAllPlaces(): Flow<List<PropertyModel>>
 
-    @Query("SELECT * FROM PlaceModel WHERE isSpecial='1' ")
-    fun getSpecialPlaces(): Flow<List<PlaceModel>>
+    @Query("SELECT * FROM PropertyModel WHERE isSpecial='1' ")
+    fun getSpecialPlaces(): Flow<List<PropertyModel>>
 
 }
