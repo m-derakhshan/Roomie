@@ -1,7 +1,7 @@
 package m.derakhshan.roomie.feature_home.presentation.composable
 
 
-
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -197,8 +197,10 @@ fun HomeScreen(
                     .background(White)
             ) {
                 FilterSearchSection { filters, confirmed ->
-                    if (confirmed)
-                        viewModel.onEvent(HomeEvent.UpdateAppliedFilter(filters))
+                    Log.i(
+                        "Log",
+                        "HomeScreen: Filter Callback: confirmed:$confirmed\n filters: $filters"
+                    )
                     viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
                 }
             }

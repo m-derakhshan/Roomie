@@ -61,11 +61,6 @@ class HomeViewModel @Inject constructor(repository: HomeRepository) : ViewModel(
                     isFilterListVisible = !_state.value.isFilterListVisible
                 )
             }
-            is HomeEvent.UpdateAppliedFilter -> {
-                _state.value = _state.value.copy(
-                    appliesFilter = event.appliedFilter
-                )
-            }
         }
     }
 
