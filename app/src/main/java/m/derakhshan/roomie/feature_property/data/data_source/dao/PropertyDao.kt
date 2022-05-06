@@ -21,6 +21,6 @@ interface PropertyDao {
     fun getAllProperties(): Flow<List<PropertyModel>>
 
     @Query("SELECT * FROM PropertyModel WHERE id=:id")
-    suspend fun getPropertyById(id: String): PropertyModel?
+    suspend fun getPropertyById(id: String): PropertyModel
 
 }

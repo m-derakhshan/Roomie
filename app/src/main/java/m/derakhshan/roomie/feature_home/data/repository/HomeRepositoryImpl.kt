@@ -6,8 +6,8 @@ import m.derakhshan.roomie.core.data.data_source.ApplicationDatabase
 import m.derakhshan.roomie.core.model.Response
 import m.derakhshan.roomie.feature_home.data.data_source.HomeAPI
 import m.derakhshan.roomie.feature_home.data.data_source.dto.toPropertyModel
-import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
 import m.derakhshan.roomie.feature_home.domain.repository.HomeRepository
+import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
 
 class HomeRepositoryImpl(private val database: ApplicationDatabase, private val homeAPI: HomeAPI) :
     HomeRepository {

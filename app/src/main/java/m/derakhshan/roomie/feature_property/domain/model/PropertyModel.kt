@@ -13,15 +13,16 @@ import java.lang.reflect.Type
 data class PropertyModel(
     @PrimaryKey
     val id: String = "",
-    val rent: String= "",
-    val expenses: String= "",
+    val type: PropertyTypeModel = PropertyTypeModel(),
+    val rent: String = "",
+    val expenses: String = "",
     val images: List<String> = emptyList(),
-    val address: String= "",
-    val description: String= "",
+    val address: String = "",
+    val description: String = "",
     val availableFrom: DateModel = DateModel(),
     val equipments: List<EquipmentModel> = emptyList(),
     val isSpecial: Boolean = false,
-    val propertyFeatures:List<PropertyFeatureModel> = emptyList(),
+    val propertyFeatures: List<PropertyFeatureModel> = emptyList(),
 )
 
 class EquipmentsListConverter {
@@ -87,4 +88,21 @@ class DateConverter {
             day = date[2].toInt()
         )
     }
+}
+
+class PropertyTypeConverter{
+    @TypeConverter
+    fun fromPropertyType(propertyType: PropertyTypeModel): String {
+        val gson = Gson()
+        val type: Type = object : TypeToken<PropertyTypeModel>() {}.type
+        return gson.toJson(propertyType, type)
+    }
+
+    @TypeConverter
+    fun toPropertyType(stringType: String): PropertyTypeModel {
+        val gson = Gson()
+        val type: Type = object : TypeToken<PropertyTypeModel>() {}.type
+        return gson.fromJson(stringType, type)
+    }
+
 }

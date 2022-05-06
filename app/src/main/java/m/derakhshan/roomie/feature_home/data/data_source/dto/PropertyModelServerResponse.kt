@@ -1,13 +1,15 @@
 package m.derakhshan.roomie.feature_home.data.data_source.dto
 
 import com.google.gson.annotations.SerializedName
-import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
 import m.derakhshan.roomie.feature_filter.domain.model.toDate
 import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
 import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyTypeModel
 
 data class PropertyModelServerResponse(
     val id: String,
+    val type: PropertyTypeModel,
     val rent: String,
     val expenses: String,
     val images: List<String>,
@@ -25,6 +27,7 @@ data class PropertyModelServerResponse(
 fun PropertyModelServerResponse.toPropertyModel(): PropertyModel {
     return PropertyModel(
         id = this.id,
+        type = this.type,
         rent = "${this.rent}€",
         expenses = "${this.expenses}€",
         images = this.images,

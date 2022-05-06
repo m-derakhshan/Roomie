@@ -21,22 +21,22 @@ class FilterViewModel : ViewModel() {
                 PropertyTypeModel(
                     id = "0",
                     icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    title = "All Properties"
+                    text = "All Properties"
                 ),
                 PropertyTypeModel(
                     id = "1",
                     icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    title = "Single Room"
+                    text = "Single Room"
                 ),
                 PropertyTypeModel(
                     id = "22",
                     icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    title = "Bed"
+                    text = "Bed"
                 ),
                 PropertyTypeModel(
                     id = "3",
                     icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    title = "Studio-Flat"
+                    text = "Studio-Flat"
                 )
             ),
             equipments = listOf(
@@ -152,13 +152,14 @@ class FilterViewModel : ViewModel() {
                 val index = _state.value.propertyFeatures.indexOfFirst { it.id == event.feature.id }
                 val newList = _state.value.propertyFeatures.toMutableList()
                 newList[index] = event.feature.copy(
-                    number = _state.value.propertyFeatures[index].number + (
+                    value = (_state.value.propertyFeatures[index].value.toInt() + (
                             when {
                                 event.add -> 1
-                                _state.value.propertyFeatures[index].number > 0 -> -1
+                                _state.value.propertyFeatures[index].value.toInt() > 0 -> -1
                                 else -> 0
                             }
                             )
+                            ).toString()
                 )
                 _state.value = _state.value.copy(
                     propertyFeatures = newList

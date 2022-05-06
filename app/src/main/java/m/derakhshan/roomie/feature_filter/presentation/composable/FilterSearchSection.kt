@@ -1,7 +1,6 @@
 package m.derakhshan.roomie.feature_filter.presentation.composable
 
 
-
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -28,6 +27,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -35,18 +35,18 @@ import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.presentation.TransparentHintTextField
 import m.derakhshan.roomie.feature_filter.domain.model.DateModel
 import m.derakhshan.roomie.feature_filter.domain.model.MyCalendar
-import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
-import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
 import m.derakhshan.roomie.feature_filter.presentation.FilterEvent
 import m.derakhshan.roomie.feature_filter.presentation.FilterState
 import m.derakhshan.roomie.feature_filter.presentation.FilterViewModel
+import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
 import m.derakhshan.roomie.ui.theme.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FilterSearchSection(
+fun FilterSearchScreen(
     viewModel: FilterViewModel = hiltViewModel(),
     onButtonClickListener: (FilterState, Boolean) -> Unit
 ) {
@@ -142,11 +142,11 @@ fun FilterSearchSection(
                     ) {
                         AsyncImage(
                             model = item.icon,
-                            contentDescription = item.title,
+                            contentDescription = item.text,
                             modifier = Modifier.size(60.dp)
                         )
                         Text(
-                            text = item.title,
+                            text = item.text,
                             style = MaterialTheme.typography.body2,
                             color = MaterialTheme.colors.onBackground
                         )
@@ -307,13 +307,14 @@ fun FilterSearchSection(
 }
 
 @Composable
-private fun Section(
+fun Section(
     text: String,
     modifier: Modifier = Modifier,
+    textStyle: TextStyle = MaterialTheme.typography.body1,
     lineModifier: Modifier = Modifier
 ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(text = text, modifier = modifier, style = MaterialTheme.typography.body1)
+        Text(text = text, modifier = modifier, style = textStyle)
         Box(
             modifier = lineModifier
                 .height(1.dp)
@@ -325,7 +326,10 @@ private fun Section(
 }
 
 @Composable
-private fun DateSection(preselectedDate: DateModel, selectedDateListener: (List<DateModel>) -> Unit) {
+private fun DateSection(
+    preselectedDate: DateModel,
+    selectedDateListener: (List<DateModel>) -> Unit
+) {
 
     var monthNumber by remember { mutableStateOf(0) }
     DatePicker(
@@ -407,7 +411,7 @@ private fun ApartmentFeature(
                 Row {
                     Text(text = "${feature.text}: ")
                     AnimatedContent(
-                        targetState = feature.number,
+                        targetState = feature.value.toInt(),
                         transitionSpec = {
                             if (targetState > initialState) {
                                 slideInVertically { height -> height } + fadeIn() with

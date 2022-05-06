@@ -30,10 +30,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.NavGraph
-import m.derakhshan.roomie.core.presentation.RemovableRectShape
 import m.derakhshan.roomie.feature_home.presentation.HomeEvent
 import m.derakhshan.roomie.feature_home.presentation.HomeViewModel
-import m.derakhshan.roomie.feature_filter.presentation.composable.FilterSearchSection
 import m.derakhshan.roomie.ui.theme.Blue
 import m.derakhshan.roomie.ui.theme.LightBlue
 import m.derakhshan.roomie.ui.theme.White
@@ -186,7 +184,7 @@ fun HomeScreen(
                                     if (state.specialList.isNotEmpty())
                                         SpecialPlaceItem(
                                             modifier = Modifier.clickable {
-                                                navController.navigate(NavGraph.PropertyScreen.route + "/propertyId=${state.specialList[page].id}.")
+                                                navController.navigate(NavGraph.PropertyScreen.route + "/${state.specialList[page].id}")
                                             },
                                             item = state.specialList[page]
                                         )
@@ -197,16 +195,16 @@ fun HomeScreen(
                 }
 
             //--------------------(search and filter section)--------------------//
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RemovableRectShape(state.filterOffset.value))
-                    .background(White)
-            ) {
-                FilterSearchSection { filters, confirmed ->
-                    viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
-                }
-            }
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .clip(RemovableRectShape(state.filterOffset.value))
+//                    .background(White)
+//            ) {
+//                FilterSearchSection { filters, confirmed ->
+//                    viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
+//                }
+//            }
         }
     }
 }

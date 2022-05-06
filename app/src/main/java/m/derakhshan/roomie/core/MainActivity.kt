@@ -97,11 +97,7 @@ class MainActivity : ComponentActivity() {
                                 route = NavGraph.PropertyScreen.route + "/{propertyId}",
                                 arguments = listOf(navArgument("propertyId") { defaultValue = "" })
                             ) {
-                                PropertyScreen(
-                                    innerPadding = padding,
-                                    navController = navController,
-                                    propertyId = it.arguments?.getString("id", "")
-                                )
+                                PropertyScreen(innerPadding = padding)
                             }
                         }
                     }

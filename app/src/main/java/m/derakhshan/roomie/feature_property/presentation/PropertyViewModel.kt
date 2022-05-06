@@ -1,5 +1,6 @@
 package m.derakhshan.roomie.feature_property.presentation
 
+
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -20,11 +21,22 @@ class PropertyViewModel @Inject constructor(
     private val _state = mutableStateOf(PropertyModel())
     val state: State<PropertyModel> = _state
 
+    private val _sliderCounter = mutableStateOf("")
+    val sliderCounter: State<String> = _sliderCounter
+
     init {
-        val propertyId = stateHandle.get<String>("propertyId") ?: "-1"
-        viewModelScope.launch {
-            _state.value = repository.getPropertyById(propertyId = propertyId) ?: PropertyModel()
+
+        stateHandle.get<String>("propertyId")?.let { propertyId ->
+            viewModelScope.launch {
+                _state.value = repository.getPropertyById(propertyId = propertyId)
+                _sliderCounter.value = "1/${_state.value.images.size}"
+            }
         }
     }
 
+
+    fun updateSliderCounter(page: Int) {
+        _sliderCounter.value = "${page+1}/${_state.value.images.size}"
+    }
 }
+

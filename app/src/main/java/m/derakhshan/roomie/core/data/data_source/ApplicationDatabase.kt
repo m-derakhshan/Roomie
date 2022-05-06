@@ -14,7 +14,7 @@ import m.derakhshan.roomie.feature_property.domain.model.*
 )
 @TypeConverters(
     EquipmentsListConverter::class, StringListConverter::class, DateConverter::class,
-    PropertyFeaturesConverter::class
+    PropertyFeaturesConverter::class, PropertyTypeConverter::class
 )
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract val homeDao: HomeDao
