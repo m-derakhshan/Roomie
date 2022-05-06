@@ -6,8 +6,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pin
+import androidx.compose.material.icons.filled.PinDrop
+import androidx.compose.material.icons.outlined.Euro
+import androidx.compose.material.icons.outlined.EuroSymbol
+import androidx.compose.material.icons.outlined.PinDrop
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,27 +82,46 @@ fun PropertyScreen(
 
         //--------------------(description)--------------------//
         Column(modifier = Modifier.padding(horizontal = MaterialTheme.space.small)) {
-            Text(text = state.address, style = MaterialTheme.typography.body1)
 
-            Text(
-                modifier = Modifier.padding(vertical = MaterialTheme.space.medium),
-                color = DarkBlue,
-                text = "${state.rent} + ${state.expenses} expenses",
-                style = MaterialTheme.typography.h6
-            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Icon(
+                    imageVector = Icons.Outlined.PinDrop,
+                    contentDescription = null,
+                    tint = DarkBlue
+                )
+                Text(
+                    modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
+                    text = state.address,
+                    style = MaterialTheme.typography.body1,
+                )
+
+            }
+
+            Row(
+                modifier = Modifier
+                    .padding(vertical = MaterialTheme.space.medium)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
+                    color = Blue,
+                    text = "${state.rent} + ${state.expenses} expenses",
+                    style = MaterialTheme.typography.h6
+                )
+            }
             LazyRow {
                 items(state.propertyFeatures) { feature ->
                     Box(
                         modifier = Modifier
                             .padding(MaterialTheme.space.small)
                             .background(
-                                Blue,
+                                LightGray,
                                 shape = RoundedCornerShape(5.dp)
                             )
                     ) {
                         Text(
                             text = "${feature.text}:${feature.value}",
-                            color = White,
+                            color = Black,
                             modifier = Modifier.padding(
                                 vertical = MaterialTheme.space.small,
                                 horizontal = MaterialTheme.space.medium
