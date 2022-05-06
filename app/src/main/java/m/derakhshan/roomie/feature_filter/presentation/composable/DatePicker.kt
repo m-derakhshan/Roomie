@@ -1,4 +1,4 @@
-package m.derakhshan.roomie.feature_home.presentation.composable.filter_section
+package m.derakhshan.roomie.feature_filter.presentation.composable
 
 
 
@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import m.derakhshan.roomie.feature_home.domain.model.date.Date
-import m.derakhshan.roomie.feature_home.domain.model.date.MyCalendar
+import m.derakhshan.roomie.feature_filter.domain.model.DateModel
+import m.derakhshan.roomie.feature_filter.domain.model.MyCalendar
 import m.derakhshan.roomie.ui.theme.space
 
 private val weekDayList = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
@@ -37,12 +37,12 @@ private val weekend = listOf("Sat")
 fun DatePicker(
     titleBackground: Color = MaterialTheme.colors.primary,
     myCalendar: MyCalendar,
-    preSelectedDates: List<Date> = emptyList(),
+    preSelectedDates: List<DateModel> = emptyList(),
     singleMode: Boolean = true,
     disablePreviousDays: Boolean = true,
     onNexMonthClickListener: () -> Unit,
     onPreviousMonthClickListener: () -> Unit,
-    selectedDateListener: (List<Date>) -> Unit,
+    selectedDateListener: (List<DateModel>) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -126,13 +126,13 @@ fun DatePicker(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DaysList(
-    days: List<Date>,
-    preSelectedDates: List<Date>,
+    days: List<DateModel>,
+    preSelectedDates: List<DateModel>,
     disablePreviousDays: Boolean,
     singleMode: Boolean,
-    selectedDateListener: (List<Date>) -> Unit
+    selectedDateListener: (List<DateModel>) -> Unit
 ) {
-    val selectedList = remember { mutableStateListOf(Date.today) }
+    val selectedList = remember { mutableStateListOf(DateModel.today) }
     if (singleMode)
         selectedList.clear()
     selectedList.addAll(preSelectedDates)
@@ -149,8 +149,8 @@ private fun DaysList(
                     textColor = Color.Black,
                     selectedDayColor = Color.Blue,
                     isSelected = day in selectedList,
-                    isActive = if (disablePreviousDays) day.day != -1 && day > Date.today else day.day != -1,
-                    isToday = day == Date.today
+                    isActive = if (disablePreviousDays) day.day != -1 && day > DateModel.today else day.day != -1,
+                    isToday = day == DateModel.today
                 ) {
 
                     if (singleMode)
@@ -162,7 +162,7 @@ private fun DaysList(
                         selectedList.add(day)
 
                     if (selectedList.isEmpty())
-                        selectedList.add(Date.today)
+                        selectedList.add(DateModel.today)
 
                     selectedDateListener(selectedList)
 

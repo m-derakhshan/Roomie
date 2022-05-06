@@ -21,7 +21,7 @@ object HomeModule {
     @Provides
     @Singleton
     fun provideHomeRepository(db: ApplicationDatabase, homeAPI: HomeAPI): HomeRepository {
-        return HomeRepositoryImpl(database = db.homeDao, homeAPI = homeAPI)
+        return HomeRepositoryImpl(database = db, homeAPI = homeAPI)
     }
 
     @Provides

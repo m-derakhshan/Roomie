@@ -1,4 +1,4 @@
-package m.derakhshan.roomie.feature_home.domain.model.date
+package m.derakhshan.roomie.feature_filter.domain.model
 
 import java.util.*
 
@@ -58,7 +58,7 @@ class MyCalendar(nextMonth: Int = 0) {
             else -> "December"
         }
     }
-    fun generateDays(): List<Date> {
+    fun generateDays(): List<DateModel> {
 
         val inactiveDays =
             when {
@@ -72,10 +72,10 @@ class MyCalendar(nextMonth: Int = 0) {
                     space
                 }
             }
-        val result = ArrayList<Date>()
+        val result = ArrayList<DateModel>()
         for (i in 1..inactiveDays)
             result.add(
-                Date(
+                DateModel(
                     day = -1,
                     month = month,
                     year = year
@@ -83,7 +83,7 @@ class MyCalendar(nextMonth: Int = 0) {
             )
         for (i in 1..getDaysOfMonthCount(month))
             result.add(
-                Date(
+                DateModel(
                     day = i,
                     month = month,
                     year = year

@@ -1,9 +1,9 @@
-package m.derakhshan.roomie.feature_home.presentation.filter_section
+package m.derakhshan.roomie.feature_filter.presentation
 
-import m.derakhshan.roomie.feature_home.domain.model.date.Date
-import m.derakhshan.roomie.feature_home.domain.model.filter.EquipmentModel
-import m.derakhshan.roomie.feature_home.domain.model.filter.PropertyFeatureModel
-import m.derakhshan.roomie.feature_home.domain.model.filter.PropertyTypeModel
+import m.derakhshan.roomie.feature_filter.domain.model.DateModel
+import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyTypeModel
 
 
 data class FilterState(
@@ -11,7 +11,7 @@ data class FilterState(
     val selectedPropertyType: PropertyTypeModel = PropertyTypeModel(),
     val priceRange: ClosedFloatingPointRange<Float> = 300f..2000f,
     val priceRangeLimit: ClosedFloatingPointRange<Float> = 300f..2000f,
-    val availableFrom: Date = Date.today,
+    val availableFrom: DateModel = DateModel.today,
     val propertyType: List<PropertyTypeModel> = emptyList(),
     val equipments: List<EquipmentModel> = emptyList(),
     val propertyFeatures: List<PropertyFeatureModel> = emptyList()

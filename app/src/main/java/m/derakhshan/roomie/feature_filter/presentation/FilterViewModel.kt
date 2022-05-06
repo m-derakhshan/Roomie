@@ -1,12 +1,12 @@
-package m.derakhshan.roomie.feature_home.presentation.filter_section
+package m.derakhshan.roomie.feature_filter.presentation
 
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import m.derakhshan.roomie.feature_home.domain.model.filter.EquipmentModel
-import m.derakhshan.roomie.feature_home.domain.model.filter.PropertyFeatureModel
-import m.derakhshan.roomie.feature_home.domain.model.filter.PropertyTypeModel
+import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyTypeModel
 
 
 class FilterViewModel : ViewModel() {

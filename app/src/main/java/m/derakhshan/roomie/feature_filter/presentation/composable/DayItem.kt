@@ -1,4 +1,4 @@
-package m.derakhshan.roomie.feature_home.presentation.composable.filter_section
+package m.derakhshan.roomie.feature_filter.presentation.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import m.derakhshan.roomie.feature_home.domain.model.PropertyModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
 
 
 @Composable

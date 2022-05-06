@@ -14,7 +14,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import m.derakhshan.roomie.feature_home.domain.model.PropertyModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
 import m.derakhshan.roomie.ui.theme.*
 
 @Composable
@@ -68,7 +68,7 @@ fun PropertyItem(modifier: Modifier = Modifier, item: PropertyModel, contentDesc
                     bottom = MaterialTheme.space.small
                 ),
             style = MaterialTheme.typography.body1,
-            text = item.title,
+            text = item.description,
             color = MaterialTheme.colors.onBackground
         )
 

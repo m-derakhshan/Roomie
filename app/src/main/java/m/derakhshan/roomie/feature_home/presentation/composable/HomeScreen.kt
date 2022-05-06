@@ -1,7 +1,7 @@
 package m.derakhshan.roomie.feature_home.presentation.composable
 
 
-import android.util.Log
+
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.presentation.RemovableRectShape
 import m.derakhshan.roomie.feature_home.presentation.HomeEvent
 import m.derakhshan.roomie.feature_home.presentation.HomeViewModel
-import m.derakhshan.roomie.feature_home.presentation.composable.filter_section.FilterSearchSection
+import m.derakhshan.roomie.feature_filter.presentation.composable.FilterSearchSection
 import m.derakhshan.roomie.ui.theme.Blue
 import m.derakhshan.roomie.ui.theme.LightBlue
 import m.derakhshan.roomie.ui.theme.White
@@ -197,10 +197,6 @@ fun HomeScreen(
                     .background(White)
             ) {
                 FilterSearchSection { filters, confirmed ->
-                    Log.i(
-                        "Log",
-                        "HomeScreen: Filter Callback: confirmed:$confirmed\n filters: $filters"
-                    )
                     viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
                 }
             }

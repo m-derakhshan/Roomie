@@ -1,4 +1,4 @@
-package m.derakhshan.roomie.feature_home.presentation.composable.filter_section
+package m.derakhshan.roomie.feature_filter.presentation.composable
 
 
 
@@ -33,13 +33,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.presentation.TransparentHintTextField
-import m.derakhshan.roomie.feature_home.domain.model.date.Date
-import m.derakhshan.roomie.feature_home.domain.model.date.MyCalendar
-import m.derakhshan.roomie.feature_home.domain.model.filter.EquipmentModel
-import m.derakhshan.roomie.feature_home.domain.model.filter.PropertyFeatureModel
-import m.derakhshan.roomie.feature_home.presentation.filter_section.FilterEvent
-import m.derakhshan.roomie.feature_home.presentation.filter_section.FilterState
-import m.derakhshan.roomie.feature_home.presentation.filter_section.FilterViewModel
+import m.derakhshan.roomie.feature_filter.domain.model.DateModel
+import m.derakhshan.roomie.feature_filter.domain.model.MyCalendar
+import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
+import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
+import m.derakhshan.roomie.feature_filter.presentation.FilterEvent
+import m.derakhshan.roomie.feature_filter.presentation.FilterState
+import m.derakhshan.roomie.feature_filter.presentation.FilterViewModel
 import m.derakhshan.roomie.ui.theme.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -325,7 +325,7 @@ private fun Section(
 }
 
 @Composable
-private fun DateSection(preselectedDate: Date, selectedDateListener: (List<Date>) -> Unit) {
+private fun DateSection(preselectedDate: DateModel, selectedDateListener: (List<DateModel>) -> Unit) {
 
     var monthNumber by remember { mutableStateOf(0) }
     DatePicker(

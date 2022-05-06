@@ -20,20 +20,6 @@ class HomeViewModel @Inject constructor(repository: HomeRepository) : ViewModel(
     val state: State<HomeState> = _state
 
     init {
-        viewModelScope.launch {
-            repository.getSpecialPlaces().collectLatest { list ->
-                _state.value = _state.value.copy(
-                    specialList = list
-                )
-            }
-        }
-        viewModelScope.launch {
-            repository.getAllPlaces().collectLatest { list ->
-                _state.value = _state.value.copy(
-                    placesList = list
-                )
-            }
-        }
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateLocalDatabase().let {
                 if (it is Response.Error)
@@ -42,6 +28,14 @@ class HomeViewModel @Inject constructor(repository: HomeRepository) : ViewModel(
                     )
             }
         }
+        viewModelScope.launch {
+            repository.getSpecialPlaces().collectLatest { list ->
+                _state.value = _state.value.copy(
+                    specialList = list
+                )
+            }
+        }
+
     }
 
     fun onEvent(event: HomeEvent) {
@@ -49,11 +43,6 @@ class HomeViewModel @Inject constructor(repository: HomeRepository) : ViewModel(
             is HomeEvent.ChangeInternetState -> {
                 _state.value = _state.value.copy(
                     isInternetConnected = event.isConnected
-                )
-            }
-            is HomeEvent.PlaceListSwiped -> {
-                _state.value = _state.value.copy(
-                    placesListOffset = event.offset
                 )
             }
             HomeEvent.ToggleFilterSearchListVisibility -> {

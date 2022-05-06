@@ -1,4 +1,4 @@
-package m.derakhshan.roomie.feature_home.domain.model.filter
+package m.derakhshan.roomie.feature_property.domain.model
 
 data class PropertyTypeModel(
     val id: String = "0",
