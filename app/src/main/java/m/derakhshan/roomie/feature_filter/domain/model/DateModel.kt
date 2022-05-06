@@ -15,6 +15,10 @@ data class DateModel(
         else 1
     }
 
+    override fun toString(): String {
+        return "$day-$month-$year"
+    }
+
     companion object {
         val today: DateModel
             get() {

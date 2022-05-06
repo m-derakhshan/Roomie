@@ -109,15 +109,18 @@ class FilterViewModel : ViewModel() {
             propertyFeatures = listOf(
                 PropertyFeatureModel(
                     id = "0",
-                    "Persons Number"
+                    text = "Persons Number",
+                    value = "0"
                 ),
                 PropertyFeatureModel(
                     id = "1",
-                    "Rooms Number"
+                    text = "Rooms Number",
+                    value = "0"
                 ),
                 PropertyFeatureModel(
                     id = "2",
-                    "Beds Number"
+                    text = "Beds Number",
+                    value = "0"
                 )
             )
         )

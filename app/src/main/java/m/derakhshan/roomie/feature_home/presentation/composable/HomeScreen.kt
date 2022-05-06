@@ -30,6 +30,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.NavGraph
+import m.derakhshan.roomie.core.presentation.RemovableRectShape
+import m.derakhshan.roomie.feature_filter.presentation.composable.FilterSearchScreen
 import m.derakhshan.roomie.feature_home.presentation.HomeEvent
 import m.derakhshan.roomie.feature_home.presentation.HomeViewModel
 import m.derakhshan.roomie.ui.theme.Blue
@@ -195,16 +197,16 @@ fun HomeScreen(
                 }
 
             //--------------------(search and filter section)--------------------//
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .clip(RemovableRectShape(state.filterOffset.value))
-//                    .background(White)
-//            ) {
-//                FilterSearchSection { filters, confirmed ->
-//                    viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
-//                }
-//            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RemovableRectShape(state.filterOffset.value))
+                    .background(White)
+            ) {
+                FilterSearchScreen { filters, confirmed ->
+                    viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
+                }
+            }
         }
     }
 }

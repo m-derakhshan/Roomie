@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class PropertyFeatureModel(
     val id: String = "",
-    val value: String = "",
+    val value: String = "0",
     val text: String = "",
     @SerializedName("other_info")
     val otherInfo: String = "",

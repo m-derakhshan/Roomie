@@ -1,5 +1,6 @@
 package m.derakhshan.roomie.feature_property.presentation.composable
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
@@ -10,23 +11,27 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Pin
-import androidx.compose.material.icons.filled.PinDrop
-import androidx.compose.material.icons.outlined.Euro
-import androidx.compose.material.icons.outlined.EuroSymbol
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.PinDrop
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import m.derakhshan.roomie.R
+import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
 import m.derakhshan.roomie.feature_property.presentation.PropertyViewModel
 import m.derakhshan.roomie.ui.theme.*
 
@@ -96,6 +101,21 @@ fun PropertyScreen(
                 )
 
             }
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = MaterialTheme.space.small)) {
+                Icon(
+                    imageVector = Icons.Outlined.DateRange,
+                    contentDescription = null,
+                    tint = DarkBlue
+                )
+                Text(
+                    modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
+                    text = "${stringResource(id = R.string.available_from)}: ${state.availableFrom}",
+                    style = MaterialTheme.typography.body1,
+                )
+
+            }
 
             Row(
                 modifier = Modifier
@@ -120,7 +140,7 @@ fun PropertyScreen(
                             )
                     ) {
                         Text(
-                            text = "${feature.text}:${feature.value}",
+                            text = "${feature.text}: ${feature.value}",
                             color = Black,
                             modifier = Modifier.padding(
                                 vertical = MaterialTheme.space.small,
@@ -135,7 +155,10 @@ fun PropertyScreen(
                 modifier = Modifier.padding(vertical = MaterialTheme.space.extraSmall),
                 style = MaterialTheme.typography.body1
             )
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Equipments(equipments = state.equipments)
         }
+
     }
 
 }
@@ -167,4 +190,46 @@ private fun Slider(images: List<String>, swiped: (Int) -> Unit) {
             )
         }
     }
+}
+
+@Composable
+fun Equipments(equipments: List<EquipmentModel>) {
+
+    for (item in equipments.indices step 2) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.weight(0.5f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                AsyncImage(
+                    modifier = Modifier.size(25.dp),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(equipments[item].icon)
+                        .build(),
+                    contentDescription = equipments[item].title,
+                    onState = {
+                        Log.i("Log", "Equipments: state is $it")
+                    }
+                )
+                Text(text = equipments[item].title)
+
+            }
+            if (item != equipments.lastIndex)
+                Row(
+                    modifier = Modifier.weight(0.5f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(equipments[item + 1].icon)
+                            .build(),
+                        contentDescription = equipments[item].title
+                    )
+                    Text(text = equipments[item + 1].title)
+                }
+        }
+    }
+
 }
