@@ -1,7 +1,6 @@
 package m.derakhshan.roomie.feature_home.presentation.composable
 
 
-
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -152,7 +151,7 @@ fun HomeScreen(
                         )
                         CompositionLocalProvider(LocalOverScrollConfiguration provides null) {
                             HorizontalPager(
-                                count = 4,
+                                count = state.specialList.size,
                                 contentPadding =
                                 PaddingValues(
                                     horizontal = MaterialTheme.space.large,

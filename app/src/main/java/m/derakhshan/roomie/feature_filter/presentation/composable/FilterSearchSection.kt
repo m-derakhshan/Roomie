@@ -405,7 +405,7 @@ private fun ApartmentFeature(
                 }
 
                 Row {
-                    Text(text = "${feature.title}: ")
+                    Text(text = "${feature.text}: ")
                     AnimatedContent(
                         targetState = feature.number,
                         transitionSpec = {

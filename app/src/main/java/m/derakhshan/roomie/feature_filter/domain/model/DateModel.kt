@@ -27,3 +27,12 @@ data class DateModel(
             }
     }
 }
+
+fun String.toDate(): DateModel {
+    val data = this.split("-")
+    return DateModel(
+        day = data[0].toInt(),
+        month = data[1].toInt(),
+        year = data[2].toInt()
+    )
+}

@@ -55,7 +55,7 @@ fun PropertyItem(modifier: Modifier = Modifier, item: PropertyModel, contentDesc
             ) {
                 Text(
                     color = Blue,
-                    text = item.price,
+                    text = "${item.rent} + ${item.expenses} expenses",
                     style = MaterialTheme.typography.body1
                 )
             }
