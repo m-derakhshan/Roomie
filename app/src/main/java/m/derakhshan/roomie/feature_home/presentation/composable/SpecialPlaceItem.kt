@@ -18,8 +18,8 @@ import m.derakhshan.roomie.ui.theme.space
 
 
 @Composable
-fun SpecialPlaceItem(item: PropertyModel) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
+fun SpecialPlaceItem(item: PropertyModel, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
         AsyncImage(
             model = item.images.first(),
             modifier = Modifier.fillMaxSize(),

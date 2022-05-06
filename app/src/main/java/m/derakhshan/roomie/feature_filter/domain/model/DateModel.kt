@@ -3,9 +3,9 @@ package m.derakhshan.roomie.feature_filter.domain.model
 import java.util.*
 
 data class DateModel(
-    val day: Int,
-    val month: Int,
-    val year: Int
+    val day: Int = 0,
+    val month: Int = 0,
+    val year: Int = 0
 ) {
     operator fun compareTo(date: DateModel): Int {
         return if (this.year < date.year) -1

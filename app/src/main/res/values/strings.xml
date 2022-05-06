@@ -17,4 +17,6 @@
     <string name="price_range">Price Range</string>
     <string name="filter">Filter</string>
     <string name="all">All</string>
+    <string name="property">Property</string>
+
 </resources>

@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import m.derakhshan.roomie.R
 
 sealed class NavGraph(
-    val resourceId: Int, val route: String, val icon: ImageVector
+    val resourceId: Int? = null, val route: String, val icon: ImageVector? = null
 ) {
     object Home : NavGraph(resourceId = R.string.home, route = "home", icon = Icons.Default.Home)
     object Profile :
@@ -21,4 +21,6 @@ sealed class NavGraph(
         route = "wish_list",
         icon = Icons.Default.Favorite
     )
+
+    object PropertyScreen : NavGraph(route = "property_screen")
 }

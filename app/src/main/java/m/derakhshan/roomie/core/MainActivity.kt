@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -16,10 +18,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
+import m.derakhshan.roomie.R
 import m.derakhshan.roomie.feature_home.presentation.composable.HomeScreen
 import m.derakhshan.roomie.feature_map.presentation.MapScreen
 import m.derakhshan.roomie.feature_profile.presentation.ProfileScreen
+import m.derakhshan.roomie.feature_property.presentation.composable.PropertyScreen
 import m.derakhshan.roomie.feature_splash_screen.SplashScreen
 import m.derakhshan.roomie.feature_wish_list.presentation.WishListScreen
 import m.derakhshan.roomie.ui.theme.RoomieTheme
@@ -48,11 +53,19 @@ class MainActivity : ComponentActivity() {
                                 BottomNavigationItem(
                                     icon = {
                                         Icon(
-                                            screen.icon,
-                                            contentDescription = stringResource(id = screen.resourceId)
+                                            screen.icon ?: Icons.Default.Add,
+                                            contentDescription = stringResource(
+                                                id = screen.resourceId ?: R.string.app_name
+                                            )
                                         )
                                     },
-                                    label = { Text(stringResource(screen.resourceId)) },
+                                    label = {
+                                        Text(
+                                            stringResource(
+                                                screen.resourceId ?: R.string.app_name
+                                            )
+                                        )
+                                    },
                                     selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                                     onClick = {
                                         navController.navigate(screen.route) {
@@ -71,10 +84,25 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             startDestination = NavGraph.Home.route
                         ) {
-                            composable(NavGraph.Home.route) { HomeScreen(innerPadding = padding) }
+                            composable(NavGraph.Home.route) {
+                                HomeScreen(
+                                    innerPadding = padding,
+                                    navController = navController
+                                )
+                            }
                             composable(NavGraph.Profile.route) { ProfileScreen(innerPadding = padding) }
                             composable(NavGraph.WishList.route) { WishListScreen(innerPadding = padding) }
                             composable(NavGraph.Map.route) { MapScreen(innerPadding = padding) }
+                            composable(
+                                route = NavGraph.PropertyScreen.route + "/{propertyId}",
+                                arguments = listOf(navArgument("propertyId") { defaultValue = "" })
+                            ) {
+                                PropertyScreen(
+                                    innerPadding = padding,
+                                    navController = navController,
+                                    propertyId = it.arguments?.getString("id", "")
+                                )
+                            }
                         }
                     }
                     SplashScreen(removeScreen = viewModel.removeSplashScreen.value) { viewModel.removeSplashScreen() }

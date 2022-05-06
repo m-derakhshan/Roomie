@@ -24,10 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import m.derakhshan.roomie.R
+import m.derakhshan.roomie.core.NavGraph
 import m.derakhshan.roomie.core.presentation.RemovableRectShape
 import m.derakhshan.roomie.feature_home.presentation.HomeEvent
 import m.derakhshan.roomie.feature_home.presentation.HomeViewModel
@@ -43,6 +45,7 @@ import kotlin.math.absoluteValue
 @Composable
 fun HomeScreen(
     innerPadding: PaddingValues,
+    navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
@@ -181,7 +184,12 @@ fun HomeScreen(
                                     shape = RoundedCornerShape(10.dp),
                                 ) {
                                     if (state.specialList.isNotEmpty())
-                                        SpecialPlaceItem(state.specialList[page])
+                                        SpecialPlaceItem(
+                                            modifier = Modifier.clickable {
+                                                navController.navigate(NavGraph.PropertyScreen.route + "/propertyId=${state.specialList[page].id}.")
+                                            },
+                                            item = state.specialList[page]
+                                        )
                                 }
                             }
                         }
