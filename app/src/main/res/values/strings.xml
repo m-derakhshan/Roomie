@@ -19,5 +19,6 @@
     <string name="all">All</string>
     <string name="property">Property</string>
     <string name="description">Description</string>
+    <string name="address">Address</string>
 
 </resources>

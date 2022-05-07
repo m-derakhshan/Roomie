@@ -1,6 +1,9 @@
 package m.derakhshan.roomie.feature_property.presentation.composable
 
-import android.util.Log
+
+import androidx.compose.animation.*
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
@@ -11,6 +14,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.PinDrop
 import androidx.compose.runtime.Composable
@@ -19,13 +24,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
@@ -37,18 +47,20 @@ import com.google.accompanist.pager.rememberPagerState
 import m.derakhshan.roomie.R
 import m.derakhshan.roomie.feature_filter.presentation.composable.Section
 import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
+import m.derakhshan.roomie.feature_property.presentation.PropertyEvent
 import m.derakhshan.roomie.feature_property.presentation.PropertyViewModel
 import m.derakhshan.roomie.ui.theme.*
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PropertyScreen(
     innerPadding: PaddingValues,
+    navController: NavController,
     viewModel: PropertyViewModel = hiltViewModel()
 ) {
 
     val state = viewModel.state.value
-    val sliderCounter = viewModel.sliderCounter.value
 
     Column(
         modifier = Modifier
@@ -61,7 +73,9 @@ fun PropertyScreen(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            Slider(images = state.images, swiped = { viewModel.updateSliderCounter(it) })
+            Slider(
+                images = state.property.images,
+                swiped = { viewModel.onEvent(PropertyEvent.SliderSwiped(it)) })
             Image(
                 modifier = Modifier.fillMaxWidth(),
                 painter = painterResource(id = R.mipmap.white_fade),
@@ -78,7 +92,10 @@ fun PropertyScreen(
                         .height(2.dp)
                         .background(Blue)
                 )
-                Text(text = sliderCounter, modifier = Modifier.padding(MaterialTheme.space.small))
+                Text(
+                    text = state.sliderCounter,
+                    modifier = Modifier.padding(MaterialTheme.space.small)
+                )
                 Box(
                     modifier = Modifier
                         .weight(0.5f)
@@ -87,6 +104,23 @@ fun PropertyScreen(
                 )
 
             }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .background(
+                        color = LightGray.copy(alpha = 0.5f),
+                        RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp)
+                    )
+                    .clip(shape = RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp))
+                    .clickable { navController.navigateUp() }
+                    .padding(
+                        vertical = MaterialTheme.space.extraSmall,
+                        horizontal = MaterialTheme.space.small
+                    )
+            ) {
+                Icon(imageVector = Icons.Default.ArrowBackIos, contentDescription = "back")
+            }
+
         }
 
 
@@ -101,7 +135,7 @@ fun PropertyScreen(
                 )
                 Text(
                     modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
-                    text = state.address,
+                    text = "${stringResource(id = R.string.address)}: ${state.property.address}",
                     style = MaterialTheme.typography.body1,
                 )
 
@@ -118,7 +152,7 @@ fun PropertyScreen(
                 )
                 Text(
                     modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
-                    text = "${stringResource(id = R.string.available_from)}: ${state.availableFrom}",
+                    text = "${stringResource(id = R.string.available_from)}: ${state.property.availableFrom}",
                     style = MaterialTheme.typography.body1,
                 )
 
@@ -132,12 +166,13 @@ fun PropertyScreen(
                 Text(
                     modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
                     color = Blue,
-                    text = "${state.rent} + ${state.expenses} expenses",
+                    text = "${state.property.rent} + ${state.property.expenses} expenses",
                     style = MaterialTheme.typography.h6
                 )
             }
+            //--------------------(apartment features)--------------------//
             LazyRow {
-                items(state.propertyFeatures) { feature ->
+                items(state.property.propertyFeatures) { feature ->
                     Box(
                         modifier = Modifier
                             .padding(MaterialTheme.space.small)
@@ -145,6 +180,7 @@ fun PropertyScreen(
                                 LightGray,
                                 shape = RoundedCornerShape(5.dp)
                             )
+                            .border(width = 1.dp, color = Gray, shape = RoundedCornerShape(5.dp))
                     ) {
                         Text(
                             text = "${feature.text}: ${feature.value}",
@@ -157,20 +193,50 @@ fun PropertyScreen(
                     }
                 }
             }
-            Text(
-                text = state.description,
-                modifier = Modifier.padding(vertical = MaterialTheme.space.extraSmall),
-                style = MaterialTheme.typography.body1
-            )
+            //--------------------(description)--------------------//
+            AnimatedContent(
+                modifier = Modifier.clickable { viewModel.onEvent(PropertyEvent.ToggleDescriptionExpansion) },
+                targetState = state.expandDescription,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(150)) with
+                            fadeOut(animationSpec = tween(150)) using
+                            SizeTransform { initialSize, targetSize ->
+                                if (targetState) {
+                                    keyframes {
+                                        IntSize(initialSize.width, initialSize.height) at 150
+                                        durationMillis = 500
+                                    }
+                                } else {
+                                    keyframes {
+                                        IntSize(initialSize.width, targetSize.height) at 200
+                                        durationMillis = 600
+                                    }
+                                }
+                            }
+                }
+            ) { targetExpanded ->
+
+                Text(
+                    text = when {
+                        targetExpanded -> state.property.description
+                        state.property.description.length > 200 -> state.property.description.substring(0, 200) + "..."
+                        else -> state.property.description
+                    },
+                    modifier = Modifier.padding(vertical = MaterialTheme.space.extraSmall),
+                    style = MaterialTheme.typography.body1
+                )
+
+            }
+
+
+            //--------------------(equipments)--------------------//
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Section(
                 text = stringResource(id = R.string.equipments),
-                textStyle = MaterialTheme.typography.body1.copy(
-                    fontSize = 18.sp
-                )
+                textStyle = MaterialTheme.typography.body1.copy(fontSize = 18.sp)
             )
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            Equipments(equipments = state.equipments)
+            Equipments(equipments = state.property.equipments)
         }
 
     }

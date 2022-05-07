@@ -18,25 +18,38 @@ class PropertyViewModel @Inject constructor(
     stateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(PropertyModel())
-    val state: State<PropertyModel> = _state
+    private val _state = mutableStateOf(PropertyState())
+    val state: State<PropertyState> = _state
 
-    private val _sliderCounter = mutableStateOf("")
-    val sliderCounter: State<String> = _sliderCounter
 
     init {
 
         stateHandle.get<String>("propertyId")?.let { propertyId ->
             viewModelScope.launch {
-                _state.value = repository.getPropertyById(propertyId = propertyId)
-                _sliderCounter.value = "1/${_state.value.images.size}"
+                _state.value = _state.value.copy(
+                    property = repository.getPropertyById(propertyId = propertyId),
+                )
             }
+            _state.value = _state.value.copy(
+                sliderCounter = "1/${_state.value.property.images.size}"
+            )
         }
     }
 
 
-    fun updateSliderCounter(page: Int) {
-        _sliderCounter.value = "${page+1}/${_state.value.images.size}"
+    fun onEvent(event: PropertyEvent) {
+        when (event) {
+            is PropertyEvent.SliderSwiped -> {
+                _state.value = _state.value.copy(
+                    sliderCounter = "${event.page + 1}/${_state.value.property.images.size}"
+                )
+            }
+            PropertyEvent.ToggleDescriptionExpansion -> {
+                _state.value = _state.value.copy(
+                    expandDescription = !_state.value.expandDescription
+                )
+            }
+        }
     }
 }
 

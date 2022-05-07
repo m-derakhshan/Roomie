@@ -27,16 +27,7 @@ fun SpecialPlaceItem(item: PropertyModel, modifier: Modifier = Modifier) {
             contentDescription = item.address,
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .alpha(0.6f)
-                .background(MaterialTheme.colors.onBackground)
-                .align(Alignment.BottomCenter)
-        )
-
-        Column {
+        Column(modifier = Modifier.background(MaterialTheme.colors.onBackground.copy(alpha = 0.6f))) {
             Text(
                 modifier = Modifier
                     .padding(
