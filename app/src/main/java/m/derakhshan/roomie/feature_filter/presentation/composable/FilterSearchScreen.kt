@@ -317,7 +317,7 @@ fun Section(
         Text(text = text, modifier = modifier, style = textStyle)
         Box(
             modifier = lineModifier
-                .height(1.dp)
+                .height(2.dp)
                 .weight(1f)
                 .padding(start = MaterialTheme.space.extraSmall)
                 .background(Blue)

@@ -24,13 +24,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import m.derakhshan.roomie.R
+import m.derakhshan.roomie.feature_filter.presentation.composable.Section
 import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
 import m.derakhshan.roomie.feature_property.presentation.PropertyViewModel
 import m.derakhshan.roomie.ui.theme.*
@@ -86,7 +91,7 @@ fun PropertyScreen(
 
 
         //--------------------(description)--------------------//
-        Column(modifier = Modifier.padding(horizontal = MaterialTheme.space.small)) {
+        Column(modifier = Modifier.padding(MaterialTheme.space.small)) {
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Icon(
@@ -101,9 +106,11 @@ fun PropertyScreen(
                 )
 
             }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = MaterialTheme.space.small)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = MaterialTheme.space.medium)
+            ) {
                 Icon(
                     imageVector = Icons.Outlined.DateRange,
                     contentDescription = null,
@@ -156,6 +163,13 @@ fun PropertyScreen(
                 style = MaterialTheme.typography.body1
             )
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Section(
+                text = stringResource(id = R.string.equipments),
+                textStyle = MaterialTheme.typography.body1.copy(
+                    fontSize = 18.sp
+                )
+            )
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
             Equipments(equipments = state.equipments)
         }
 
@@ -196,7 +210,11 @@ private fun Slider(images: List<String>, swiped: (Int) -> Unit) {
 fun Equipments(equipments: List<EquipmentModel>) {
 
     for (item in equipments.indices step 2) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = MaterialTheme.space.small)
+        ) {
             Row(
                 modifier = Modifier.weight(0.5f),
                 verticalAlignment = Alignment.CenterVertically,
@@ -204,15 +222,16 @@ fun Equipments(equipments: List<EquipmentModel>) {
             ) {
                 AsyncImage(
                     modifier = Modifier.size(25.dp),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(equipments[item].icon)
+                    model = equipments[item].icon,
+                    imageLoader = ImageLoader.Builder(LocalContext.current)
+                        .components { add(SvgDecoder.Factory()) }
                         .build(),
                     contentDescription = equipments[item].title,
-                    onState = {
-                        Log.i("Log", "Equipments: state is $it")
-                    }
                 )
-                Text(text = equipments[item].title)
+                Text(
+                    text = equipments[item].title,
+                    modifier = Modifier.padding(start = MaterialTheme.space.small)
+                )
 
             }
             if (item != equipments.lastIndex)
@@ -222,12 +241,16 @@ fun Equipments(equipments: List<EquipmentModel>) {
                     horizontalArrangement = Arrangement.Start
                 ) {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(equipments[item + 1].icon)
+                        model = equipments[item + 1].icon,
+                        imageLoader = ImageLoader.Builder(LocalContext.current)
+                            .components { add(SvgDecoder.Factory()) }
                             .build(),
                         contentDescription = equipments[item].title
                     )
-                    Text(text = equipments[item + 1].title)
+                    Text(
+                        text = equipments[item + 1].title,
+                        modifier = Modifier.padding(start = MaterialTheme.space.small)
+                    )
                 }
         }
     }
