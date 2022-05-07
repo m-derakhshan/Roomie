@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
 import m.derakhshan.roomie.feature_property.domain.repository.PropertyRepository
 import javax.inject.Inject
 
