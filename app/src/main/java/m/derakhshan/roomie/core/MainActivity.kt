@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
                             val currentDestination = navBackStackEntry?.destination
                             screens.forEach { screen ->
                                 BottomNavigationItem(
+                                    alwaysShowLabel = false,
                                     icon = {
                                         Icon(
                                             screen.icon ?: Icons.Default.Add,

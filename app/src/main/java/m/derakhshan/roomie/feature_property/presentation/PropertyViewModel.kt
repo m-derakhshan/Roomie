@@ -22,7 +22,6 @@ class PropertyViewModel @Inject constructor(
 
 
     init {
-
         stateHandle.get<String>("propertyId")?.let { propertyId ->
             viewModelScope.launch {
                 _state.value = _state.value.copy(
@@ -32,7 +31,6 @@ class PropertyViewModel @Inject constructor(
                     sliderCounter = "1/${_state.value.property.images.size}"
                 )
             }
-
         }
     }
 
