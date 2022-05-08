@@ -8,7 +8,7 @@ import m.derakhshan.roomie.feature_property.domain.model.PropertyTypeModel
 
 data class FilterState(
     val searchValue: String = "",
-    val selectedPropertyType: PropertyTypeModel = PropertyTypeModel(),
+    val selectedPropertyTypeId: String = "0",
     val priceRange: ClosedFloatingPointRange<Float> = 300f..2000f,
     val priceRangeLimit: ClosedFloatingPointRange<Float> = 300f..2000f,
     val availableFrom: DateModel = DateModel.today,

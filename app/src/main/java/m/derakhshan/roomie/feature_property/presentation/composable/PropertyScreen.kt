@@ -287,10 +287,10 @@ fun Equipments(equipments: List<EquipmentModel>) {
                     imageLoader = ImageLoader.Builder(LocalContext.current)
                         .components { add(SvgDecoder.Factory()) }
                         .build(),
-                    contentDescription = equipments[item].title,
+                    contentDescription = equipments[item].text,
                 )
                 Text(
-                    text = equipments[item].title,
+                    text = equipments[item].text,
                     modifier = Modifier.padding(start = MaterialTheme.space.small)
                 )
 
@@ -306,10 +306,10 @@ fun Equipments(equipments: List<EquipmentModel>) {
                         imageLoader = ImageLoader.Builder(LocalContext.current)
                             .components { add(SvgDecoder.Factory()) }
                             .build(),
-                        contentDescription = equipments[item].title
+                        contentDescription = equipments[item].text
                     )
                     Text(
-                        text = equipments[item + 1].title,
+                        text = equipments[item + 1].text,
                         modifier = Modifier.padding(start = MaterialTheme.space.small)
                     )
                 }

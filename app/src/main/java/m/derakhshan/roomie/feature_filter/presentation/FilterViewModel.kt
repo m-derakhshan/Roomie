@@ -4,169 +4,97 @@ package m.derakhshan.roomie.feature_filter.presentation
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
-import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
-import m.derakhshan.roomie.feature_property.domain.model.PropertyTypeModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import m.derakhshan.roomie.feature_filter.domain.model.AppliedFilterModel
+import m.derakhshan.roomie.feature_filter.domain.model.toDate
+import m.derakhshan.roomie.feature_filter.domain.repository.FilterRepository
+import javax.inject.Inject
 
 
-class FilterViewModel : ViewModel() {
+@HiltViewModel
+class FilterViewModel @Inject constructor(private val repository: FilterRepository) : ViewModel() {
 
     private val _state = mutableStateOf(FilterState())
     val state: State<FilterState> = _state
 
+    private var appliedFilterModel: AppliedFilterModel = AppliedFilterModel()
 
     init {
-        _state.value = _state.value.copy(
-            propertyType = listOf(
-                PropertyTypeModel(
-                    id = "0",
-                    icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    text = "All Properties"
-                ),
-                PropertyTypeModel(
-                    id = "1",
-                    icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    text = "Single Room"
-                ),
-                PropertyTypeModel(
-                    id = "22",
-                    icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    text = "Bed"
-                ),
-                PropertyTypeModel(
-                    id = "3",
-                    icon = "https://cdn0.iconfinder.com/data/icons/real-estate-blue-line/64/130-RealEstate-Blue_real-estate-building-apartment-house-512.png",
-                    text = "Studio-Flat"
+        viewModelScope.launch {
+            with(repository.getFilters()) {
+                _state.value = _state.value.copy(
+                    priceRangeLimit = this.priceRangeLimit,
+                    propertyType = this.propertyType,
+                    equipments = this.equipments,
+                    propertyFeatures = this.propertyFeatures
                 )
-            ),
-            equipments = listOf(
-                EquipmentModel(
-                    id = "1",
-                    title = "TV",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "2",
-                    title = "Balcony",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "3",
-                    title = "Elevator",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "4",
-                    title = "Garden",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "5",
-                    title = "TV Signal",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "6",
-                    title = "Dish washer",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "7",
-                    title = "Private bathroom",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "8",
-                    title = "Storage room",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "9",
-                    title = "Wifi",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "10",
-                    title = "Reception",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "11",
-                    title = "Washing machine",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "12",
-                    title = "Air conditioner",
-                    isChecked = false
-                ),
-                EquipmentModel(
-                    id = "13",
-                    title = "Bike parking",
-                    isChecked = false
+            }
+            with(repository.getAppliedFilter()) {
+                appliedFilterModel =
+                    this ?: AppliedFilterModel(priceRange = _state.value.priceRangeLimit)
+                _state.value = _state.value.copy(
+                    searchValue = appliedFilterModel.search,
+                    selectedPropertyTypeId = appliedFilterModel.selectedPropertyTypeId,
+                    priceRange = appliedFilterModel.priceRange,
+                    availableFrom = appliedFilterModel.availableFrom.toDate(),
                 )
-            ),
-            propertyFeatures = listOf(
-                PropertyFeatureModel(
-                    id = "0",
-                    text = "Persons Number",
-                    value = "0"
-                ),
-                PropertyFeatureModel(
-                    id = "1",
-                    text = "Rooms Number",
-                    value = "0"
-                ),
-                PropertyFeatureModel(
-                    id = "2",
-                    text = "Beds Number",
-                    value = "0"
-                )
-            )
-        )
+            }
+        }
     }
 
     fun onEvent(event: FilterEvent) {
         when (event) {
             is FilterEvent.SearchValueChange -> {
                 _state.value = _state.value.copy(searchValue = event.search)
+                appliedFilterModel = appliedFilterModel.copy(
+                    search = event.search
+                )
             }
             is FilterEvent.UpdateSelectedEquipment -> {
                 val index = _state.value.equipments.indexOfFirst { it.id == event.equipment.id }
                 val newList = _state.value.equipments.toMutableList()
                 newList[index] = event.equipment
-                _state.value = _state.value.copy(
-                    equipments = newList
-                )
+                _state.value = _state.value.copy(equipments = newList)
+                appliedFilterModel = appliedFilterModel.copy(equipments = newList.map { it.id })
             }
             is FilterEvent.UpdateSelectedPropertyType -> {
-                _state.value = _state.value.copy(selectedPropertyType = event.type)
+                _state.value = _state.value.copy(selectedPropertyTypeId = event.type.id)
+                appliedFilterModel = appliedFilterModel.copy(selectedPropertyTypeId = event.type.id)
             }
             is FilterEvent.UpdateAvailableFrom -> {
                 _state.value = _state.value.copy(availableFrom = event.date)
+                appliedFilterModel = appliedFilterModel.copy(availableFrom = event.date.toString())
             }
             is FilterEvent.UpdatePriceRange -> {
                 _state.value = _state.value.copy(priceRange = event.range)
-            }
-            FilterEvent.ResetAllFilters -> {
-                // TODO: implement reset filters
+                appliedFilterModel =
+                    appliedFilterModel.copy(priceRange = event.range)
             }
             is FilterEvent.UpdatePropertyFeature -> {
                 val index = _state.value.propertyFeatures.indexOfFirst { it.id == event.feature.id }
                 val newList = _state.value.propertyFeatures.toMutableList()
                 newList[index] = event.feature.copy(
-                    value = (_state.value.propertyFeatures[index].value.toInt() + (
-                            when {
-                                event.add -> 1
-                                _state.value.propertyFeatures[index].value.toInt() > 0 -> -1
-                                else -> 0
-                            }
-                            )
-                            ).toString()
+                    value = (_state.value.propertyFeatures[index].value + (when {
+                        event.add -> 1
+                        _state.value.propertyFeatures[index].value > 0 -> -1
+                        else -> 0
+                    }))
                 )
                 _state.value = _state.value.copy(
                     propertyFeatures = newList
                 )
+                appliedFilterModel = appliedFilterModel.copy(
+                    propertyFeatures = newList.map { it.id }
+                )
+            }
+            is FilterEvent.ConfirmAppliedFilter -> {
+                viewModelScope.launch {
+                    if (!event.confirm)
+                        appliedFilterModel = AppliedFilterModel()
+                    repository.updateAppliedFilter(appliedFilterModel)
+                }
             }
         }
     }

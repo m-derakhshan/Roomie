@@ -59,7 +59,7 @@ fun HomeScreen(
     LaunchedEffect(state.isFilterListVisible) {
         state.filterOffset.animateTo(
             if (state.isFilterListVisible) 2500f else 0f,
-            animationSpec = tween(800, delayMillis = if (state.isFilterListVisible) 800 else 0)
+            animationSpec = tween(800, delayMillis = if (state.isFilterListVisible) 1250 else 0)
         )
     }
 
@@ -207,8 +207,9 @@ fun HomeScreen(
                     .clip(RemovableRectShape(state.filterOffset.value))
                     .background(White)
             ) {
-                FilterScreen()
+                FilterScreen {
+                    viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
+                }
             }
-
     }
 }

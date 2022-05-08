@@ -1,11 +1,9 @@
 package m.derakhshan.roomie.feature_property.domain.model
 
-import com.google.gson.annotations.SerializedName
 
 data class PropertyFeatureModel(
-    val id: String = "",
-    val value: String = "0",
-    val text: String = "",
-    @SerializedName("other_info")
-    val otherInfo: String = "",
+    val id: String,
+    val text: String,
+    val value: Int,
+    val maxValue: Int
 )

@@ -1,5 +1,6 @@
 package m.derakhshan.roomie.feature_home.data.data_source
 
+import m.derakhshan.roomie.feature_filter.data.data_source.dto.FilterModelServerResponse
 import m.derakhshan.roomie.feature_home.data.data_source.dto.PropertyModelServerResponse
 import retrofit2.http.GET
 
@@ -9,6 +10,6 @@ interface HomeAPI {
     suspend fun updatePlaces(): List<PropertyModelServerResponse>
 
     @GET("filters")
-    suspend fun updateFilters(): List<PropertyModelServerResponse>
+    suspend fun updateFilters(): FilterModelServerResponse
 
 }

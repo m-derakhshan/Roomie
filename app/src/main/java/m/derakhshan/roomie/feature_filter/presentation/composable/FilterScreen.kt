@@ -1,8 +1,6 @@
 package m.derakhshan.roomie.feature_filter.presentation.composable
 
 
-
-
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -50,6 +48,7 @@ import kotlin.math.roundToInt
 @Composable
 fun FilterScreen(
     viewModel: FilterViewModel = hiltViewModel(),
+    callBack: () -> Unit
 ) {
     val state = viewModel.state.value
     val equipments = rememberUpdatedState(newValue = state.equipments)
@@ -64,246 +63,247 @@ fun FilterScreen(
     )
 
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(MaterialTheme.space.medium)
-            ) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(MaterialTheme.space.medium)
+        ) {
 
-                var hintVisibility by remember { mutableStateOf(state.searchValue.isEmpty()) }
+            var hintVisibility by remember { mutableStateOf(state.searchValue.isEmpty()) }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .background(LightBlue, shape = RoundedCornerShape(10.dp))
-                        .clip(shape = RoundedCornerShape(10.dp))
-                        .padding(end = MaterialTheme.space.extraSmall),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null,
-                        modifier = Modifier.padding(start = MaterialTheme.space.small),
-                        tint = White
-                    )
-                    TransparentHintTextField(
-                        text = state.searchValue,
-                        hint = stringResource(id = R.string.search),
-                        textColor = White,
-                        hintColor = White,
-                        isHintVisible = hintVisibility,
-                        onValueChanged = { search ->
-                            viewModel.onEvent(FilterEvent.SearchValueChange(search))
-                        },
-                        singleLine = true,
-                        onFocusChangeListener = {
-                            if (it.isFocused)
-                                hintVisibility = false
-                            else if (state.searchValue.isEmpty())
-                                hintVisibility = true
-                        }
-                    )
-                }
-
-                //--------------------(property type section)--------------------//
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Section(text = stringResource(id = R.string.property_type))
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    items(items = state.propertyType) { item ->
-                        Column(
-                            modifier = Modifier
-                                .padding(MaterialTheme.space.extraSmall)
-                                .size(100.dp)
-                                .background(
-                                    if (item.id == state.selectedPropertyType.id) VeryLightBlue else White,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                                .border(
-                                    2.dp,
-                                    if (item.id == state.selectedPropertyType.id) Blue else LightBlue,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                                .clip(shape = RoundedCornerShape(10.dp))
-                                .clickable {
-                                    viewModel.onEvent(FilterEvent.UpdateSelectedPropertyType(item))
-                                }
-                                .padding(MaterialTheme.space.extraSmall),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            AsyncImage(
-                                model = item.icon,
-                                contentDescription = item.text,
-                                modifier = Modifier.size(60.dp)
-                            )
-                            Text(
-                                text = item.text,
-                                style = MaterialTheme.typography.body2,
-                                color = MaterialTheme.colors.onBackground
-                            )
-                        }
-                    }
-
-                }
-
-                //--------------------(price range section)--------------------//
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Section(text = stringResource(id = R.string.price_range))
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(text = "${(state.priceRange.start).roundToInt()}€")
-                    Text(text = "${(state.priceRange.endInclusive).roundToInt()}€")
-                }
-                RangeSlider(
-                    values = state.priceRange,
-                    onValueChange = { range ->
-                        viewModel.onEvent(FilterEvent.UpdatePriceRange(range))
-                    },
-                    valueRange = state.priceRangeLimit,
-                )
-
-                //--------------------(available from)--------------------//
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Section(text = stringResource(id = R.string.available_from))
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Column(modifier = Modifier.height(350.dp)) {
-                    DateSection(
-                        preselectedDate = state.availableFrom,
-                        selectedDateListener = remember(viewModel) {
-                            {
-                                viewModel.onEvent(FilterEvent.UpdateAvailableFrom(it.first()))
-                            }
-                        }
-                    )
-                }
-
-                //--------------------(Equipments)--------------------//
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Section(text = stringResource(id = R.string.equipments))
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Equipments(
-                    equipmentList = equipments,
-                    checkListener = remember(viewModel) {
-                        {
-                            viewModel.onEvent(FilterEvent.UpdateSelectedEquipment(it))
-                        }
-                    }
-                )
-
-                //--------------------(Property Features)--------------------//
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                Section(text = stringResource(id = R.string.property_features))
-                Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-                ApartmentFeature(featuresList = propertyFeature, listener = remember(viewModel) {
-                    { feature, add ->
-                        viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
-                    }
-                })
-            }
-            //--------------------(confirm or reject selected filter)--------------------//
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(MaterialTheme.space.small),
+                    .height(50.dp)
+                    .background(LightBlue, shape = RoundedCornerShape(10.dp))
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .padding(end = MaterialTheme.space.extraSmall),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = MaterialTheme.space.small),
+                    tint = White
+                )
+                TransparentHintTextField(
+                    text = state.searchValue,
+                    hint = stringResource(id = R.string.search),
+                    textColor = White,
+                    hintColor = White,
+                    isHintVisible = hintVisibility,
+                    onValueChanged = { search ->
+                        viewModel.onEvent(FilterEvent.SearchValueChange(search))
+                    },
+                    singleLine = true,
+                    onFocusChangeListener = {
+                        if (it.isFocused)
+                            hintVisibility = false
+                        else if (state.searchValue.isEmpty())
+                            hintVisibility = true
+                    }
+                )
+            }
+
+            //--------------------(property type section)--------------------//
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Section(text = stringResource(id = R.string.property_type))
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                items(items = state.propertyType) { item ->
+                    Column(
+                        modifier = Modifier
+                            .padding(MaterialTheme.space.extraSmall)
+                            .size(100.dp)
+                            .background(
+                                if (item.id == state.selectedPropertyTypeId) VeryLightBlue else White,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .border(
+                                2.dp,
+                                if (item.id == state.selectedPropertyTypeId) Blue else LightBlue,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .clip(shape = RoundedCornerShape(10.dp))
+                            .clickable {
+                                viewModel.onEvent(FilterEvent.UpdateSelectedPropertyType(item))
+                            }
+                            .padding(MaterialTheme.space.extraSmall),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        AsyncImage(
+                            model = item.icon,
+                            contentDescription = item.text,
+                            modifier = Modifier.size(60.dp)
+                        )
+                        Text(
+                            text = item.text,
+                            style = MaterialTheme.typography.body2,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    }
+                }
+
+            }
+
+            //--------------------(price range section)--------------------//
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Section(text = stringResource(id = R.string.price_range))
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "${(state.priceRange.start).roundToInt()}€")
+                Text(text = "${(state.priceRange.endInclusive).roundToInt()}€")
+            }
+            RangeSlider(
+                values = state.priceRange,
+                onValueChange = { range ->
+                    viewModel.onEvent(FilterEvent.UpdatePriceRange(range))
+                },
+                valueRange = state.priceRangeLimit,
+            )
+
+            //--------------------(available from)--------------------//
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Section(text = stringResource(id = R.string.available_from))
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Column(modifier = Modifier.height(350.dp)) {
+
+                DateSection(
+                    preselectedDate = state.availableFrom,
+                    selectedDateListener = remember(viewModel) {
+                        {
+                            viewModel.onEvent(FilterEvent.UpdateAvailableFrom(it.first()))
+                        }
+                    }
+                )
+
+            }
+
+            //--------------------(Equipments)--------------------//
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Section(text = stringResource(id = R.string.equipments))
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Equipments(
+                equipmentList = equipments,
+                checkListener = remember(viewModel) {
+                    {
+                        viewModel.onEvent(FilterEvent.UpdateSelectedEquipment(it))
+                    }
+                }
+            )
+
+            //--------------------(Property Features)--------------------//
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            Section(text = stringResource(id = R.string.property_features))
+            Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
+            ApartmentFeature(featuresList = propertyFeature, listener = remember(viewModel) {
+                { feature, add ->
+                    viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
+                }
+            })
+        }
+        //--------------------(confirm or reject selected filter)--------------------//
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaterialTheme.space.small),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Icon(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .alpha(0.25f),
+                    imageVector = Icons.Outlined.Close,
+                    contentDescription = null,
+                    tint = Red
+                )
+
+
+                Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = "")
+                Icon(imageVector = Icons.Default.KeyboardArrowRight, contentDescription = "")
+
+
+                Icon(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .alpha(0.25f),
+                    imageVector = Icons.Outlined.Done,
+                    contentDescription = null,
+                    tint = Green
+                )
+
+
+            }
+
+            Box(
+                modifier = Modifier
+                    .offset(x = animatedOffset.dp)
+                    .shadow(2.dp, CircleShape)
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .align(Alignment.Center)
+                    .draggable(
+                        orientation = Orientation.Horizontal,
+                        state = rememberDraggableState {
+                            offset += (it * 0.35f)
+                        },
+                        onDragStopped = {
+                            if (abs(offset) > 110f) {
+                                viewModel.onEvent(FilterEvent.ConfirmAppliedFilter(offset > 110f))
+                                callBack()
+                            }
+                            offset = 0f
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Icon(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .alpha(0.25f),
-                        imageVector = Icons.Outlined.Close,
-                        contentDescription = null,
-                        tint = Red
-                    )
-
-
-                    Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = "")
-                    Icon(imageVector = Icons.Default.KeyboardArrowRight, contentDescription = "")
-
-
-                    Icon(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .alpha(0.25f),
-                        imageVector = Icons.Outlined.Done,
-                        contentDescription = null,
-                        tint = Green
-                    )
-
-
-                }
 
                 Box(
                     modifier = Modifier
-                        .offset(x = animatedOffset.dp)
-                        .shadow(2.dp, CircleShape)
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .align(Alignment.Center)
-                        .draggable(
-                            orientation = Orientation.Horizontal,
-                            state = rememberDraggableState {
-                                offset += (it * 0.35f)
-                            },
-                            onDragStopped = {
-                                if (abs(offset) > 110f) {
-                                    if (offset < (-110f))
-                                        viewModel.onEvent(FilterEvent.ResetAllFilters)
-                                    // TODO: apply filters
-                                }
-                                offset = 0f
-                            }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .alpha(offset * 0.01f)
-                            .background(Green)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .alpha(1f - offset * 0.01f)
-                            .background(Blue)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .alpha((-offset) * 0.01f)
-                            .background(Red)
-                    )
-                    Icon(
-                        imageVector = Icons.Outlined.FilterAlt,
-                        contentDescription = null,
-                        tint = MaterialTheme.colors.onPrimary
-                    )
-                }
+                        .fillMaxSize()
+                        .alpha(offset * 0.01f)
+                        .background(Green)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(1f - offset * 0.01f)
+                        .background(Blue)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha((-offset) * 0.01f)
+                        .background(Red)
+                )
+                Icon(
+                    imageVector = Icons.Outlined.FilterAlt,
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.onPrimary
+                )
             }
-
         }
+
+    }
 
 
 }
@@ -360,7 +360,7 @@ private fun Equipments(
                 Checkbox(
                     checked = equipments[item].isChecked,
                     onCheckedChange = { checkListener(equipments[item].copy(isChecked = it)) })
-                Text(text = equipments[item].title)
+                Text(text = equipments[item].text)
 
             }
             if (item != equipments.lastIndex)
@@ -372,7 +372,7 @@ private fun Equipments(
                     Checkbox(
                         checked = equipments[item + 1].isChecked,
                         onCheckedChange = { checkListener(equipments[item + 1].copy(isChecked = it)) })
-                    Text(text = equipments[item + 1].title)
+                    Text(text = equipments[item + 1].text)
                 }
         }
     }
