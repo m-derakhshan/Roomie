@@ -1,6 +1,8 @@
 package m.derakhshan.roomie.feature_home.presentation.composable
 
 
+
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,7 +33,7 @@ import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.NavGraph
 import m.derakhshan.roomie.core.presentation.RemovableRectShape
-import m.derakhshan.roomie.feature_filter.presentation.composable.FilterSearchScreen
+import m.derakhshan.roomie.feature_filter.presentation.composable.FilterScreen
 import m.derakhshan.roomie.feature_home.presentation.HomeEvent
 import m.derakhshan.roomie.feature_home.presentation.HomeViewModel
 import m.derakhshan.roomie.ui.theme.Blue
@@ -48,12 +50,17 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+
     val state = viewModel.state.value
+    BackHandler(enabled = state.isFilterListVisible) {
+        viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
+    }
+
 
     LaunchedEffect(state.isFilterListVisible) {
         state.filterOffset.animateTo(
             if (state.isFilterListVisible) 2500f else 0f,
-            animationSpec = tween(1000)
+            animationSpec = tween(600, delayMillis = 700)
         )
     }
 
@@ -81,9 +88,7 @@ fun HomeScreen(
                             .height(50.dp)
                             .background(White, shape = RoundedCornerShape(10.dp))
                             .clip(shape = RoundedCornerShape(10.dp))
-                            .clickable {
-                                viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
-                            },
+                            .clickable { viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility) },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -195,21 +200,16 @@ fun HomeScreen(
                         }
                     }
                 }
-
-            //--------------------(search and filter section)--------------------//
+        }
+        if (state.isFilterListVisible || state.filterOffset.value > 0)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RemovableRectShape(state.filterOffset.value))
                     .background(White)
             ) {
-                FilterSearchScreen { filters, confirmed ->
-                    viewModel.onEvent(HomeEvent.ToggleFilterSearchListVisibility)
-                }
+                FilterScreen()
             }
-        }
+
     }
 }
-
-
-

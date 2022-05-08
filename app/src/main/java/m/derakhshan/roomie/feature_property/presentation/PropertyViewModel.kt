@@ -28,10 +28,11 @@ class PropertyViewModel @Inject constructor(
                 _state.value = _state.value.copy(
                     property = repository.getPropertyById(propertyId = propertyId),
                 )
+                _state.value = _state.value.copy(
+                    sliderCounter = "1/${_state.value.property.images.size}"
+                )
             }
-            _state.value = _state.value.copy(
-                sliderCounter = "1/${_state.value.property.images.size}"
-            )
+
         }
     }
 

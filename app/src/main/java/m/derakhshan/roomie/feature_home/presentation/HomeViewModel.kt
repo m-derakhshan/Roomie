@@ -35,7 +35,6 @@ class HomeViewModel @Inject constructor(repository: HomeRepository) : ViewModel(
                 )
             }
         }
-
     }
 
     fun onEvent(event: HomeEvent) {
