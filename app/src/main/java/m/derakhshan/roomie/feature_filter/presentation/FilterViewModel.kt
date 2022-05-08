@@ -1,6 +1,7 @@
 package m.derakhshan.roomie.feature_filter.presentation
 
 
+
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.launch
 import m.derakhshan.roomie.feature_filter.domain.model.AppliedFilterModel
 import m.derakhshan.roomie.feature_filter.domain.model.toDate
 import m.derakhshan.roomie.feature_filter.domain.repository.FilterRepository
+import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
 import javax.inject.Inject
 
 
@@ -33,9 +35,9 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                 )
             }
             repository.getAppliedFilter().collectLatest {
-                appliedFilterModel =
-                    it ?: AppliedFilterModel(priceRange = _state.value.priceRangeLimit)
-               //--------------------(make sure price range is in the range even after resetting filters)--------------------//
+
+                appliedFilterModel = it ?: AppliedFilterModel()
+                //--------------------(make sure price range is in the range even after resetting filters)--------------------//
                 appliedFilterModel = appliedFilterModel.copy(
                     priceRange = if (appliedFilterModel.priceRange == 0f..1f)
                         _state.value.priceRangeLimit
@@ -47,7 +49,12 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                     selectedPropertyTypeId = appliedFilterModel.selectedPropertyTypeId,
                     priceRange = appliedFilterModel.priceRange,
                     availableFrom = appliedFilterModel.availableFrom.toDate(),
+                    propertyFeatures = updateSyncPropertyFeatures(
+                        mainList = _state.value.propertyFeatures,
+                        secondList = appliedFilterModel.propertyFeatures
+                    )
                 )
+
             }
         }
     }
@@ -84,18 +91,20 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                 val index = _state.value.propertyFeatures.indexOfFirst { it.id == event.feature.id }
                 val newList = _state.value.propertyFeatures.toMutableList()
                 newList[index] = event.feature.copy(
-                    value = (_state.value.propertyFeatures[index].value + (when {
-                        event.add -> 1
-                        _state.value.propertyFeatures[index].value > 0 -> -1
-                        else -> 0
-                    }))
+                    value = (_state.value.propertyFeatures[index].value + (
+                            when {
+                                event.add ->
+                                    if (_state.value.propertyFeatures[index].value < _state.value.propertyFeatures[index].maxValue)
+                                        1 else 0
+                                _state
+                                    .value.propertyFeatures[index].value > 0
+                                -> -1
+                                else -> 0
+                            }
+                            ))
                 )
-                _state.value = _state.value.copy(
-                    propertyFeatures = newList
-                )
-                appliedFilterModel = appliedFilterModel.copy(
-                    propertyFeatures = newList.map { it.id }
-                )
+                _state.value = _state.value.copy(propertyFeatures = newList)
+                appliedFilterModel = appliedFilterModel.copy(propertyFeatures = newList)
             }
             is FilterEvent.ConfirmAppliedFilter -> {
                 viewModelScope.launch {
@@ -105,5 +114,23 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                 }
             }
         }
+    }
+
+    private fun updateSyncPropertyFeatures(
+        mainList: List<PropertyFeatureModel>,
+        secondList: List<PropertyFeatureModel>
+    ): List<PropertyFeatureModel> {
+        val newList = mainList.toMutableList()
+        val filterIds = secondList.map { it.id }
+        for (index in mainList.indices) {
+            newList[index] = newList[index].copy(
+                value =
+                if (mainList[index].id in filterIds)
+                    secondList[secondList.indexOfFirst { secondItem -> secondItem.id == mainList[index].id }].value
+                else
+                    0
+            )
+        }
+        return newList
     }
 }

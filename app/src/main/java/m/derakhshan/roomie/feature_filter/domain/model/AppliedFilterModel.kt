@@ -2,6 +2,7 @@ package m.derakhshan.roomie.feature_filter.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
 
 @Entity
 data class AppliedFilterModel(
@@ -12,5 +13,5 @@ data class AppliedFilterModel(
     val priceRange: ClosedFloatingPointRange<Float> = 0f..1f,
     val availableFrom: String = DateModel.today.toString(),
     val equipments: List<String> = emptyList(),
-    val propertyFeatures: List<String> = emptyList()
+    val propertyFeatures: List<PropertyFeatureModel> = emptyList()
 )
