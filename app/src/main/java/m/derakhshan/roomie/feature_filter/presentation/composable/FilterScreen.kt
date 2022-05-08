@@ -72,8 +72,6 @@ fun FilterScreen(
                 .padding(MaterialTheme.space.medium)
         ) {
 
-            var hintVisibility by remember { mutableStateOf(state.searchValue.isEmpty()) }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -95,17 +93,10 @@ fun FilterScreen(
                     hint = stringResource(id = R.string.search),
                     textColor = White,
                     hintColor = White,
-                    isHintVisible = hintVisibility,
                     onValueChanged = { search ->
                         viewModel.onEvent(FilterEvent.SearchValueChange(search))
                     },
-                    singleLine = true,
-                    onFocusChangeListener = {
-                        if (it.isFocused)
-                            hintVisibility = false
-                        else if (state.searchValue.isEmpty())
-                            hintVisibility = true
-                    }
+                    singleLine = true
                 )
             }
 

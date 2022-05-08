@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import m.derakhshan.roomie.feature_filter.domain.model.AppliedFilterModel
 import m.derakhshan.roomie.feature_filter.domain.model.FilterModel
 
@@ -20,7 +21,7 @@ interface FilterDao {
     suspend fun updateAppliedFilter(appliedFilterModel: AppliedFilterModel)
 
     @Query("SELECT * FROM AppliedFilterModel LIMIT 1")
-    suspend fun getAppliedFilter(): AppliedFilterModel?
+    fun getAppliedFilter(): Flow<AppliedFilterModel?>
 
     @Query("DELETE FROM AppliedFilterModel")
     suspend fun deleteAll()

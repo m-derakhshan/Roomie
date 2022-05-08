@@ -9,7 +9,7 @@ data class AppliedFilterModel(
     val id: Int = 1,
     val search: String = "",
     val selectedPropertyTypeId: String = "0",
-    val priceRange: ClosedFloatingPointRange<Float> = 300f..3000f,
+    val priceRange: ClosedFloatingPointRange<Float> = 0f..1f,
     val availableFrom: String = DateModel.today.toString(),
     val equipments: List<String> = emptyList(),
     val propertyFeatures: List<String> = emptyList()

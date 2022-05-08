@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import m.derakhshan.roomie.feature_filter.domain.model.AppliedFilterModel
 import m.derakhshan.roomie.feature_filter.domain.model.toDate
@@ -31,9 +32,16 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                     propertyFeatures = this.propertyFeatures
                 )
             }
-            with(repository.getAppliedFilter()) {
+            repository.getAppliedFilter().collectLatest {
                 appliedFilterModel =
-                    this ?: AppliedFilterModel(priceRange = _state.value.priceRangeLimit)
+                    it ?: AppliedFilterModel(priceRange = _state.value.priceRangeLimit)
+               //--------------------(make sure price range is in the range even after resetting filters)--------------------//
+                appliedFilterModel = appliedFilterModel.copy(
+                    priceRange = if (appliedFilterModel.priceRange == 0f..1f)
+                        _state.value.priceRangeLimit
+                    else
+                        appliedFilterModel.priceRange
+                )
                 _state.value = _state.value.copy(
                     searchValue = appliedFilterModel.search,
                     selectedPropertyTypeId = appliedFilterModel.selectedPropertyTypeId,
