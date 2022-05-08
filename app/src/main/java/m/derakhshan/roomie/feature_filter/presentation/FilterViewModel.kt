@@ -1,7 +1,7 @@
 package m.derakhshan.roomie.feature_filter.presentation
 
 
-
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import m.derakhshan.roomie.feature_filter.domain.model.AppliedFilterModel
 import m.derakhshan.roomie.feature_filter.domain.model.toDate
 import m.derakhshan.roomie.feature_filter.domain.repository.FilterRepository
+import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
 import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
 import javax.inject.Inject
 
@@ -49,9 +50,13 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                     selectedPropertyTypeId = appliedFilterModel.selectedPropertyTypeId,
                     priceRange = appliedFilterModel.priceRange,
                     availableFrom = appliedFilterModel.availableFrom.toDate(),
-                    propertyFeatures = updateSyncPropertyFeatures(
+                    propertyFeatures = syncPropertyFeatures(
                         mainList = _state.value.propertyFeatures,
                         secondList = appliedFilterModel.propertyFeatures
+                    ),
+                    equipments = syncEquipment(
+                        mainList = _state.value.equipments,
+                        secondList = appliedFilterModel.equipments
                     )
                 )
 
@@ -72,7 +77,8 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                 val newList = _state.value.equipments.toMutableList()
                 newList[index] = event.equipment
                 _state.value = _state.value.copy(equipments = newList)
-                appliedFilterModel = appliedFilterModel.copy(equipments = newList.map { it.id })
+                appliedFilterModel =
+                    appliedFilterModel.copy(equipments = appliedFilterModel.equipments + event.equipment.id)
             }
             is FilterEvent.UpdateSelectedPropertyType -> {
                 _state.value = _state.value.copy(selectedPropertyTypeId = event.type.id)
@@ -116,7 +122,7 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
         }
     }
 
-    private fun updateSyncPropertyFeatures(
+    private fun syncPropertyFeatures(
         mainList: List<PropertyFeatureModel>,
         secondList: List<PropertyFeatureModel>
     ): List<PropertyFeatureModel> {
@@ -131,6 +137,18 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                     0
             )
         }
+        return newList
+    }
+
+    private fun syncEquipment(
+        mainList: List<EquipmentModel>,
+        secondList: List<String>
+    ): List<EquipmentModel> {
+        val newList = mainList.toMutableList()
+        for (index in mainList.indices)
+            newList[index] = newList[index].copy(
+                isChecked = mainList[index].id in secondList
+            )
         return newList
     }
 }
