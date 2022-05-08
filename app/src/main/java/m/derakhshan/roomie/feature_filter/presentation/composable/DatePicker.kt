@@ -149,7 +149,8 @@ private fun DaysList(
                     textColor = Color.Black,
                     selectedDayColor = Color.Blue,
                     isSelected = day in selectedList,
-                    isActive = if (disablePreviousDays) day.day != -1 && day > DateModel.today else day.day != -1,
+                    isActive = if (disablePreviousDays) day > DateModel.today else true ,
+                    isSpace = day.day == -1,
                     isToday = day == DateModel.today
                 ) {
 

@@ -1,7 +1,6 @@
 package m.derakhshan.roomie.feature_home.presentation.composable
 
 
-
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -60,7 +59,7 @@ fun HomeScreen(
     LaunchedEffect(state.isFilterListVisible) {
         state.filterOffset.animateTo(
             if (state.isFilterListVisible) 2500f else 0f,
-            animationSpec = tween(600, delayMillis = 700)
+            animationSpec = tween(800, delayMillis = if (state.isFilterListVisible) 800 else 0)
         )
     }
 

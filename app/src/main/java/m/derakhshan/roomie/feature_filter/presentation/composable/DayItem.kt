@@ -23,6 +23,7 @@ fun DayItem(
     selectedDayColor: Color,
     textColor: Color,
     isActive: Boolean,
+    isSpace: Boolean,
     isToday: Boolean,
     isSelected: Boolean,
     onSelectListener: () -> Unit
@@ -30,7 +31,12 @@ fun DayItem(
 
     Box(
         modifier = Modifier
-            .alpha(if (isActive) 1f else 0f),
+            .alpha(
+                if (isSpace) 0f
+                else if (!isActive)
+                    0.5f
+                else 1f
+            ),
         contentAlignment = Alignment.Center
     ) {
 
