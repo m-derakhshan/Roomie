@@ -18,6 +18,6 @@ object PropertyModule {
     @Provides
     @Singleton
     fun providePropertyRepository(database: ApplicationDatabase): PropertyRepository {
-        return PropertyRepositoryImpl(database = database.propertyDao)
+        return PropertyRepositoryImpl(database = database)
     }
 }

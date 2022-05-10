@@ -24,9 +24,7 @@ class PropertyViewModel @Inject constructor(
     init {
         stateHandle.get<String>("propertyId")?.let { propertyId ->
             viewModelScope.launch {
-                _state.value = _state.value.copy(
-                    property = repository.getPropertyById(propertyId = propertyId),
-                )
+                getPropertyDetails(propertyId)
                 _state.value = _state.value.copy(
                     sliderCounter = "1/${_state.value.property.images.size}"
                 )
@@ -47,7 +45,23 @@ class PropertyViewModel @Inject constructor(
                     expandDescription = !_state.value.expandDescription
                 )
             }
+            PropertyEvent.ToggleWishList -> {
+                viewModelScope.launch {
+                    if (_state.value.property.isInWishList)
+                        repository.removeFromWishList(propertyId = _state.value.property.id)
+                    else
+                        repository.addToWishList(propertyId = _state.value.property.id)
+                    getPropertyDetails(propertyId = _state.value.property.id)
+                }
+            }
         }
     }
+
+    private suspend fun getPropertyDetails(propertyId: String) {
+        _state.value = _state.value.copy(
+            property = repository.getPropertyById(propertyId = propertyId),
+        )
+    }
+
 }
 

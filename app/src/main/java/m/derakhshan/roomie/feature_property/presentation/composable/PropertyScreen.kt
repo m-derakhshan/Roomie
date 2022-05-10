@@ -11,11 +11,15 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.PinDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -68,6 +72,7 @@ fun PropertyScreen(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.BottomCenter
         ) {
+
             Slider(
                 images = state.property.images,
                 swiped = { viewModel.onEvent(PropertyEvent.SliderSwiped(it)) })
@@ -98,6 +103,13 @@ fun PropertyScreen(
                         .background(Blue)
                 )
 
+                IconButton(onClick = { viewModel.onEvent(PropertyEvent.ToggleWishList) }) {
+                    Icon(
+                        imageVector =
+                        if (state.property.isInWishList) Icons.Filled.Favorite
+                        else Icons.Filled.FavoriteBorder, contentDescription = null, tint = Red
+                    )
+                }
             }
             Box(
                 modifier = Modifier
@@ -214,7 +226,10 @@ fun PropertyScreen(
                 Text(
                     text = when {
                         targetExpanded -> state.property.description
-                        state.property.description.length > 200 -> state.property.description.substring(0, 200) + "..."
+                        state.property.description.length > 200 -> state.property.description.substring(
+                            0,
+                            200
+                        ) + "..."
                         else -> state.property.description
                     },
                     modifier = Modifier.padding(vertical = MaterialTheme.space.extraSmall),

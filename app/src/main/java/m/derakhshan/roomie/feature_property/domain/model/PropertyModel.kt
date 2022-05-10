@@ -19,4 +19,5 @@ data class PropertyModel(
     val equipments: List<EquipmentModel> = emptyList(),
     val isSpecial: Boolean = false,
     val propertyFeatures: List<PropertyFeatureModel> = emptyList(),
+    val isInWishList: Boolean = false
 )

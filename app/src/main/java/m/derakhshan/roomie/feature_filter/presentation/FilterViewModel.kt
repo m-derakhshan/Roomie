@@ -17,6 +17,8 @@ import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
 import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
 import javax.inject.Inject
 
+// TODO: fix the bug in property equipment. if I select a property and store it. the if I uncheck it and store,
+//  the selected property would be selected again even though I already have unchecked it
 
 @HiltViewModel
 class FilterViewModel @Inject constructor(private val repository: FilterRepository) : ViewModel() {

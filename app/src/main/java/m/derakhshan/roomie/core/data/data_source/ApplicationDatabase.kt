@@ -10,10 +10,12 @@ import m.derakhshan.roomie.feature_filter.domain.model.FilterModel
 import m.derakhshan.roomie.feature_home.data.data_source.dao.HomeDao
 import m.derakhshan.roomie.feature_property.data.data_source.dao.PropertyDao
 import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
+import m.derakhshan.roomie.feature_wish_list.data.data_source.dao.WishDao
+import m.derakhshan.roomie.feature_wish_list.domain.model.WishModel
 
 
 @Database(
-    entities = [PropertyModel::class, AppliedFilterModel::class, FilterModel::class],
+    entities = [PropertyModel::class, AppliedFilterModel::class, FilterModel::class, WishModel::class],
     version = 1,
 )
 @TypeConverters(
@@ -29,4 +31,5 @@ abstract class ApplicationDatabase : RoomDatabase() {
     abstract val homeDao: HomeDao
     abstract val propertyDao: PropertyDao
     abstract val filterDao: FilterDao
+    abstract val wishDao: WishDao
 }
