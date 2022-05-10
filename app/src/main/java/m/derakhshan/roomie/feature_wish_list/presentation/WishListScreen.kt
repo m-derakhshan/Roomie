@@ -1,6 +1,7 @@
 package m.derakhshan.roomie.feature_wish_list.presentation
 
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,15 +19,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.NavGraph
-import m.derakhshan.roomie.core.utils.AppConstants
 import m.derakhshan.roomie.feature_home.presentation.composable.PropertyItem
 import m.derakhshan.roomie.ui.theme.White
 import m.derakhshan.roomie.ui.theme.add
@@ -39,20 +39,22 @@ fun WishListScreen(
     innerPadding: PaddingValues
 ) {
     val state = viewModel.wishes.value
-    Scaffold(topBar = {
-        TopAppBar {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = stringResource(id = R.string.wish_list),
-                    style = MaterialTheme.typography.h6
-                )
+    Scaffold(
+        modifier = Modifier.padding(innerPadding),
+        topBar = {
+            TopAppBar {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = stringResource(id = R.string.wish_list),
+                        style = MaterialTheme.typography.h6
+                    )
+                }
             }
-        }
-    }) {
+        }) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding.add(it))
+                .padding(it)
         ) {
             items(state) { property ->
                 PropertyItem(
@@ -75,23 +77,27 @@ fun WishListScreen(
             }
         }
         if (state.isEmpty())
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                AsyncImage(
-                    modifier = Modifier.fillMaxSize(),
-                    model = AppConstants.No_Wish,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    alpha = 0.5f
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
                     text = stringResource(id = R.string.empty_wish_list),
-                    style = MaterialTheme.typography.h4,
+                    style = MaterialTheme.typography.h5,
                     modifier = Modifier
+                        .padding(top = MaterialTheme.space.large)
+                        .fillMaxWidth()
                         .alpha(0.75f),
                     textAlign = TextAlign.Center
                 )
+                Image(
+                    painter = painterResource(id = R.mipmap.no_wish_item),
+                    contentDescription = null,
+                    alpha = 0.25f
+                )
+
             }
-
     }
-
 }
