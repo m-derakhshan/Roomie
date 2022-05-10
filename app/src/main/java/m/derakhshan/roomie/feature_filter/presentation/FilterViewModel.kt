@@ -1,15 +1,16 @@
 package m.derakhshan.roomie.feature_filter.presentation
 
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import m.derakhshan.roomie.feature_filter.domain.model.AppliedFilterModel
+import m.derakhshan.roomie.feature_filter.domain.model.DateModel
 import m.derakhshan.roomie.feature_filter.domain.model.toDate
 import m.derakhshan.roomie.feature_filter.domain.repository.FilterRepository
 import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
@@ -49,7 +50,12 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
                     searchValue = appliedFilterModel.search,
                     selectedPropertyTypeId = appliedFilterModel.selectedPropertyTypeId,
                     priceRange = appliedFilterModel.priceRange,
-                    availableFrom = appliedFilterModel.availableFrom.toDate(),
+                    availableFrom = with(appliedFilterModel.availableFrom.toDate()) {
+                        if (this < DateModel.today)
+                            DateModel.today
+                        else
+                            this
+                    },
                     propertyFeatures = syncPropertyFeatures(
                         mainList = _state.value.propertyFeatures,
                         secondList = appliedFilterModel.propertyFeatures
@@ -114,11 +120,19 @@ class FilterViewModel @Inject constructor(private val repository: FilterReposito
             }
             is FilterEvent.ConfirmAppliedFilter -> {
                 viewModelScope.launch {
-                    if (!event.confirm)
-                        appliedFilterModel = AppliedFilterModel()
                     repository.updateAppliedFilter(appliedFilterModel)
                 }
             }
+            FilterEvent.ResetAppliedFilter -> {
+                viewModelScope.launch {
+                    appliedFilterModel = AppliedFilterModel()
+                    repository.updateAppliedFilter(appliedFilterModel)
+                }
+            }
+            FilterEvent.ScrollingDown -> _state.value = _state.value.copy(fabOffset = 100.dp)
+
+            FilterEvent.ScrollingUp -> _state.value = _state.value.copy(fabOffset = 0.dp)
+
         }
     }
 

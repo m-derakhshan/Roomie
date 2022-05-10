@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import m.derakhshan.roomie.R
+import m.derakhshan.roomie.feature_filter.presentation.composable.FilterScreen
 import m.derakhshan.roomie.feature_home.presentation.composable.HomeScreen
 import m.derakhshan.roomie.feature_map.presentation.MapScreen
 import m.derakhshan.roomie.feature_profile.presentation.ProfileScreen
@@ -102,6 +103,10 @@ class MainActivity : ComponentActivity() {
                                     innerPadding = padding,
                                     navController = navController
                                 )
+                            }
+                            composable(route = NavGraph.FilterScreen.route)
+                            {
+                                FilterScreen(navController = navController, innerPadding = padding)
                             }
                         }
                     }

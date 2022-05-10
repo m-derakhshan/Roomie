@@ -13,5 +13,9 @@ sealed class FilterEvent {
     data class UpdateAvailableFrom(val date: DateModel) : FilterEvent()
     data class UpdatePropertyFeature(val feature: PropertyFeatureModel, val add: Boolean) :
         FilterEvent()
-    data class ConfirmAppliedFilter(val confirm: Boolean) : FilterEvent()
+
+    object ConfirmAppliedFilter : FilterEvent()
+    object ResetAppliedFilter : FilterEvent()
+    object ScrollingUp : FilterEvent()
+    object ScrollingDown : FilterEvent()
 }

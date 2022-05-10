@@ -1,5 +1,7 @@
 package m.derakhshan.roomie.feature_filter.presentation
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import m.derakhshan.roomie.feature_filter.domain.model.DateModel
 import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
 import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
@@ -14,5 +16,6 @@ data class FilterState(
     val availableFrom: DateModel = DateModel.today,
     val propertyType: List<PropertyTypeModel> = emptyList(),
     val equipments: List<EquipmentModel> = emptyList(),
-    val propertyFeatures: List<PropertyFeatureModel> = emptyList()
+    val propertyFeatures: List<PropertyFeatureModel> = emptyList(),
+    val fabOffset: Dp = 0.dp
 )

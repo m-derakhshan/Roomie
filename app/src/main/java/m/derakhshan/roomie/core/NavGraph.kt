@@ -23,4 +23,5 @@ sealed class NavGraph(
     )
 
     object PropertyScreen : NavGraph(route = "property_screen")
+    object FilterScreen : NavGraph(route = "filter_screen")
 }

@@ -1,35 +1,28 @@
 package m.derakhshan.roomie.feature_filter.presentation.composable
 
 
+
 import androidx.compose.animation.*
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Done
-import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import m.derakhshan.roomie.R
 import m.derakhshan.roomie.core.presentation.TransparentHintTextField
@@ -40,35 +33,67 @@ import m.derakhshan.roomie.feature_filter.presentation.FilterViewModel
 import m.derakhshan.roomie.feature_property.domain.model.EquipmentModel
 import m.derakhshan.roomie.feature_property.domain.model.PropertyFeatureModel
 import m.derakhshan.roomie.ui.theme.*
-import kotlin.math.abs
 import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FilterScreen(
+    innerPadding: PaddingValues,
     viewModel: FilterViewModel = hiltViewModel(),
-    callBack: () -> Unit
+    navController: NavController
 ) {
     val state = viewModel.state.value
     val equipments = rememberUpdatedState(newValue = state.equipments)
     val propertyFeature = rememberUpdatedState(newValue = state.propertyFeatures)
-
-    var offset by remember { mutableStateOf(0f) }
-    val animatedOffset by animateFloatAsState(
-        targetValue = offset, animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
+    val fabOffset by animateDpAsState(
+        targetValue = state.fabOffset,
+        animationSpec = tween(300, easing = LinearEasing)
     )
-
-
-    Column(modifier = Modifier.fillMaxSize()) {
+    val scrollState = rememberScrollState()
+    Scaffold(
+        modifier = Modifier.padding(innerPadding),
+        topBar = {
+            TopAppBar {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        style = MaterialTheme.typography.h6,
+                        text = stringResource(id = R.string.filter),
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    IconButton(
+                        onClick = { navController.navigateUp() },
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    ) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    }
+                    Text(
+                        style = MaterialTheme.typography.body1,
+                        text = stringResource(id = R.string.reset),
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(horizontal = MaterialTheme.space.extraSmall)
+                            .clickable {
+                                viewModel.onEvent(FilterEvent.ResetAppliedFilter)
+                            }
+                            .padding(MaterialTheme.space.extraSmall)
+                    )
+                }
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                viewModel.onEvent(FilterEvent.ConfirmAppliedFilter)
+            }, modifier = Modifier.offset(y = fabOffset)) {
+                Icon(Icons.Default.ArrowForward, contentDescription = null)
+            }
+        }
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(MaterialTheme.space.medium)
         ) {
 
@@ -165,22 +190,16 @@ fun FilterScreen(
                 valueRange = state.priceRangeLimit,
             )
 
-            //--------------------(available from)--------------------//
+            //--------------------(Property Features)--------------------//
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            Section(text = stringResource(id = R.string.available_from))
+            Section(text = stringResource(id = R.string.property_features))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            Column(modifier = Modifier.height(350.dp)) {
+            ApartmentFeature(featuresList = propertyFeature, listener = remember(viewModel) {
+                { feature, add ->
+                    viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
+                }
+            })
 
-                DateSection(
-                    preselectedDate = state.availableFrom,
-                    selectedDateListener = remember(viewModel) {
-                        {
-                            viewModel.onEvent(FilterEvent.UpdateAvailableFrom(it.first()))
-                        }
-                    }
-                )
-
-            }
 
             //--------------------(Equipments)--------------------//
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
@@ -195,105 +214,26 @@ fun FilterScreen(
                 }
             )
 
-            //--------------------(Property Features)--------------------//
+
+            //--------------------(available from)--------------------//
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            Section(text = stringResource(id = R.string.property_features))
+            Section(text = stringResource(id = R.string.available_from))
             Spacer(modifier = Modifier.padding(MaterialTheme.space.small))
-            ApartmentFeature(featuresList = propertyFeature, listener = remember(viewModel) {
-                { feature, add ->
-                    viewModel.onEvent(FilterEvent.UpdatePropertyFeature(feature, add))
-                }
-            })
-        }
-        //--------------------(confirm or reject selected filter)--------------------//
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(MaterialTheme.space.small),
-            contentAlignment = Alignment.Center
-        ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .height(350.dp)
             ) {
-
-                Icon(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .alpha(0.25f),
-                    imageVector = Icons.Outlined.Close,
-                    contentDescription = null,
-                    tint = Red
-                )
-
-
-                Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = "")
-                Icon(imageVector = Icons.Default.KeyboardArrowRight, contentDescription = "")
-
-
-                Icon(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .alpha(0.25f),
-                    imageVector = Icons.Outlined.Done,
-                    contentDescription = null,
-                    tint = Green
-                )
-
-
-            }
-
-            Box(
-                modifier = Modifier
-                    .offset(x = animatedOffset.dp)
-                    .shadow(2.dp, CircleShape)
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .align(Alignment.Center)
-                    .draggable(
-                        orientation = Orientation.Horizontal,
-                        state = rememberDraggableState {
-                            offset += (it * 0.35f)
-                        },
-                        onDragStopped = {
-                            if (abs(offset) > 110f) {
-                                viewModel.onEvent(FilterEvent.ConfirmAppliedFilter(offset > 110f))
-                                callBack()
-                            }
-                            offset = 0f
+                DateSection(
+                    preselectedDate = state.availableFrom,
+                    selectedDateListener = remember(viewModel) {
+                        {
+                            viewModel.onEvent(FilterEvent.UpdateAvailableFrom(it.first()))
                         }
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .alpha(offset * 0.01f)
-                        .background(Green)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .alpha(1f - offset * 0.01f)
-                        .background(Blue)
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .alpha((-offset) * 0.01f)
-                        .background(Red)
-                )
-                Icon(
-                    imageVector = Icons.Outlined.FilterAlt,
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.onPrimary
+                    }
                 )
             }
-        }
 
+        }
     }
 
 
@@ -323,7 +263,6 @@ private fun DateSection(
     preselectedDate: DateModel,
     selectedDateListener: (List<DateModel>) -> Unit
 ) {
-
     var monthNumber by remember { mutableStateOf(0) }
     DatePicker(
         preSelectedDates = listOf(preselectedDate),
@@ -404,7 +343,7 @@ private fun ApartmentFeature(
                 Row {
                     Text(text = "${feature.text}: ")
                     AnimatedContent(
-                        targetState = feature.value.toInt(),
+                        targetState = feature.value,
                         transitionSpec = {
                             if (targetState > initialState) {
                                 slideInVertically { height -> height } + fadeIn() with
@@ -436,4 +375,17 @@ private fun ApartmentFeature(
         }
     }
 
+}
+
+
+@Composable
+fun ScrollState.isScrollingUp(): Boolean {
+    var previousScrollOffset by remember(this) { mutableStateOf(this.value) }
+    return remember(this) {
+        derivedStateOf {
+            (previousScrollOffset - this.value >= 0).also {
+                previousScrollOffset = this.value
+            }
+        }
+    }.value
 }
