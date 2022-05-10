@@ -77,7 +77,8 @@ fun PropertyScreen(
                 images = state.property.images,
                 swiped = { viewModel.onEvent(PropertyEvent.SliderSwiped(it)) })
             Image(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 painter = painterResource(id = R.mipmap.white_fade),
                 contentDescription = null,
                 contentScale = ContentScale.Crop
@@ -94,7 +95,7 @@ fun PropertyScreen(
                 )
                 Text(
                     text = state.sliderCounter,
-                    modifier = Modifier.padding(MaterialTheme.space.small)
+                    modifier = Modifier.padding(horizontal = MaterialTheme.space.small)
                 )
                 Box(
                     modifier = Modifier
@@ -102,7 +103,6 @@ fun PropertyScreen(
                         .height(2.dp)
                         .background(Blue)
                 )
-
                 IconButton(onClick = { viewModel.onEvent(PropertyEvent.ToggleWishList) }) {
                     Icon(
                         imageVector =
@@ -273,7 +273,7 @@ private fun Slider(images: List<String>, swiped: (Int) -> Unit) {
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp),
+                    .height(270.dp),
                 model = images[page],
                 contentDescription = "",
                 contentScale = ContentScale.Crop

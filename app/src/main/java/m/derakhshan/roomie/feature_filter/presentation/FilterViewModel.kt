@@ -20,6 +20,9 @@ import javax.inject.Inject
 // TODO: fix the bug in property equipment. if I select a property and store it. the if I uncheck it and store,
 //  the selected property would be selected again even though I already have unchecked it
 
+// TODO: fix the problem of crashing if the internet is not connected and there is not data in local db
+//  for filters
+
 @HiltViewModel
 class FilterViewModel @Inject constructor(private val repository: FilterRepository) : ViewModel() {
 

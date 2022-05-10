@@ -23,4 +23,7 @@ interface PropertyDao {
     @Query("SELECT * FROM PropertyModel WHERE id=:id")
     suspend fun getPropertyById(id: String): PropertyModel
 
+    @Query("SELECT * FROM PropertyModel WHERE id in (:ids) ")
+    suspend fun getPropertyById(ids: List<String>): List<PropertyModel>
+
 }

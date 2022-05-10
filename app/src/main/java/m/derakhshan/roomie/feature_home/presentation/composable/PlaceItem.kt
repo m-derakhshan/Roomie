@@ -1,43 +1,44 @@
 package m.derakhshan.roomie.feature_home.presentation.composable
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.PinDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import m.derakhshan.roomie.R
+import m.derakhshan.roomie.core.NavGraph
 import m.derakhshan.roomie.feature_property.domain.model.PropertyModel
 import m.derakhshan.roomie.ui.theme.*
 
 @Composable
-fun PropertyItem(modifier: Modifier = Modifier, item: PropertyModel, contentDescription: String? = null) {
-
+fun PropertyItem(
+    modifier: Modifier = Modifier,
+    item: PropertyModel,
+    contentDescription: String? = null
+) {
     Column(
-        modifier = modifier
-            .padding(
-                start = MaterialTheme.space.medium,
-                end = MaterialTheme.space.medium,
-                bottom = MaterialTheme.space.small,
-                top = MaterialTheme.space.large
-            )
-            .fillMaxWidth()
-            .height(220.dp)
-            .shadow(1.dp, RoundedCornerShape(10.dp))
-            .clip(shape = RoundedCornerShape(10.dp))
-            .background(VeryLightGray, shape = RoundedCornerShape(10.dp))
+        modifier = modifier.fillMaxWidth()
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
+                .height(200.dp)
         ) {
             AsyncImage(
                 model = item.images.first(),
@@ -61,27 +62,59 @@ fun PropertyItem(modifier: Modifier = Modifier, item: PropertyModel, contentDesc
             }
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = MaterialTheme.space.small)
+                .padding(vertical = MaterialTheme.space.extraSmall)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.DateRange,
+                contentDescription = null,
+                tint = DarkBlue
+            )
+            Text(
+                modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
+                text = "${stringResource(id = R.string.available_from)}: ${item.availableFrom}",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onBackground,
+            )
+
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = MaterialTheme.space.small)
+                .padding(vertical = MaterialTheme.space.extraSmall)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.PinDrop,
+                contentDescription = null,
+                tint = DarkBlue
+            )
+            Text(
+                modifier = Modifier.padding(start = MaterialTheme.space.extraSmall),
+                text = "${stringResource(id = R.string.address)}: ${item.address}",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onBackground,
+            )
+        }
+
         Text(
             modifier = Modifier
                 .padding(
+                    top = MaterialTheme.space.small,
                     start = MaterialTheme.space.small,
                     bottom = MaterialTheme.space.small
                 ),
             style = MaterialTheme.typography.body1,
             text = item.description,
-            color = MaterialTheme.colors.onBackground
+            color = MaterialTheme.colors.onBackground,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 3
         )
 
-        Text(
-            modifier = Modifier
-                .padding(
-                    start = MaterialTheme.space.small,
-                    bottom = MaterialTheme.space.small
-                ),
-            style = MaterialTheme.typography.body2,
-            text = item.address,
-            color = MaterialTheme.colors.onBackground
-        )
+
     }
-
 }

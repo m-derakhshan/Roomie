@@ -16,7 +16,9 @@ data class DateModel(
     }
 
     override fun toString(): String {
-        return "$day-$month-$year"
+        return day.toString().padStart(2, '0') +
+                "-${month.toString().padStart(2, '0')}" +
+                "-${year.toString().padStart(2, '0')}"
     }
 
     companion object {

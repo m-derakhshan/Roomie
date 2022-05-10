@@ -93,7 +93,12 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable(NavGraph.Profile.route) { ProfileScreen(innerPadding = padding) }
-                            composable(NavGraph.WishList.route) { WishListScreen(innerPadding = padding) }
+                            composable(NavGraph.WishList.route) {
+                                WishListScreen(
+                                    innerPadding = padding,
+                                    navController = navController
+                                )
+                            }
                             composable(NavGraph.Map.route) { MapScreen(innerPadding = padding) }
                             composable(
                                 route = NavGraph.PropertyScreen.route + "/{propertyId}",
